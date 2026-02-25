@@ -1,26 +1,135 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ── Comicfest Palette ── */
+  --color-cf-black: #0a0a0a;
+  --color-cf-black-2: #111111;
+  --color-cf-black-3: #1a1a1a;
+  --color-cf-yellow: #f5c500;
+  --color-cf-yellow-light: #ffd740;
+  --color-cf-yellow-dark: #c09a00;
+  --color-cf-white: #fafafa;
+  --color-cf-gray: #2a2a2a;
+  --color-cf-gray-light: #444444;
+
+  /* ── Typography ── */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0a0a0a;
+  color: #fafafa;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111111;
+}
+::-webkit-scrollbar-thumb {
+  background: #f5c500;
+  border-radius: 3px;
+}
+
+/* ── Selection ── */
+::selection {
+  background: #f5c500;
+  color: #0a0a0a;
+}
+
+/* ── Utility classes ── */
+.font-display {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #f5c500 0%, #ffd740 50%, #c09a00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-yellow {
+  box-shadow:
+    0 0 20px rgba(245, 197, 0, 0.3),
+    0 0 60px rgba(245, 197, 0, 0.1);
+}
+
+.glow-yellow-text {
+  text-shadow: 0 0 20px rgba(245, 197, 0, 0.5);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(245, 197, 0, 0.08);
+}
+
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Animations ── */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(245, 197, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(245, 197, 0, 0.6);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
