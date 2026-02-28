@@ -3,9 +3,7 @@ import Hero from "@/components/sections/Hero";
 import type { Metadata } from "next";
 
 // Code-split below-the-fold sections (no ssr:false — this is a Server Component)
-const Stats = dynamic(() => import("@/components/sections/Stats"));
-const ActivitiesPreview = dynamic(() => import("@/components/sections/ActivitiesPreview"));
-const ExhibitorsPreview = dynamic(() => import("@/components/sections/ExhibitorsPreview"));
+const BentoLanding = dynamic(() => import("@/components/sections/BentoLanding"));
 const FaqSection = dynamic(() => import("@/components/sections/FaqSection"));
 
 export const metadata: Metadata = {
@@ -18,9 +16,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <Stats />
-      <ActivitiesPreview />
-      <ExhibitorsPreview />
+      <BentoLanding />
       <FaqSection />
     </>
   );

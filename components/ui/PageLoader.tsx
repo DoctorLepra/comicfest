@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import LaserFlowRB from "./LaserFlowRB";
 
 export default function PageLoader() {
@@ -34,7 +35,7 @@ export default function PageLoader() {
           {/* LaserFlow React Bits background */}
           <div className="absolute inset-0">
             <LaserFlowRB
-              color="#F5C500"
+              color="#ffffff"
               horizontalBeamOffset={0.0}
               verticalBeamOffset={0.0}
               horizontalSizing={0.5}
@@ -57,19 +58,21 @@ export default function PageLoader() {
 
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center gap-8 px-6 text-center">
-            {/* Logo text */}
+            {/* Logo image */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.7 }}
+              className="relative"
             >
-              <p className="text-cf-yellow/60 font-display text-sm tracking-[0.4em] uppercase mb-2">
-                Colombia
-              </p>
-              <h1 className="font-display text-5xl md:text-7xl font-black tracking-tight text-cf-white glow-yellow-text">
-                COMIC
-                <span className="text-gradient">FEST</span>
-              </h1>
+              <Image
+                src="/images/logoCF.png"
+                alt="Comicfest Colombia"
+                width={320}
+                height={160}
+                className="object-contain drop-shadow-[0_0_40px_rgba(245,197,0,0.5)] w-[220px] md:w-[320px]"
+                priority
+              />
             </motion.div>
 
             {/* Tagline */}
@@ -91,12 +94,12 @@ export default function PageLoader() {
             >
               <div className="h-px w-[260px] bg-cf-white/10 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-cf-yellow-dark via-cf-yellow to-cf-yellow-light rounded-full"
+                  className="h-full bg-gradient-to-r from-white/60 via-white to-white/80 rounded-full"
                   style={{ width: `${Math.min(progress, 100)}%` }}
                   transition={{ duration: 0.1 }}
                 />
               </div>
-              <p className="text-cf-yellow/50 text-xs font-display tracking-widest mt-3 text-center">
+              <p className="text-white/50 text-xs font-display tracking-widest mt-3 text-center">
                 {Math.min(Math.round(progress), 100)}%
               </p>
             </motion.div>
@@ -111,7 +114,7 @@ export default function PageLoader() {
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  className="w-1.5 h-1.5 rounded-full bg-cf-yellow"
+                  className="w-1.5 h-1.5 rounded-full bg-white"
                   animate={{ opacity: [0.3, 1, 0.3] }}
                   transition={{
                     duration: 1.2,
