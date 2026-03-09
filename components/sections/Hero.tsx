@@ -2,22 +2,46 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, MapPin, Calendar, Clock } from "lucide-react";
-import LaserFlow from "@/components/ui/LaserFlow";
+import dynamic from "next/dynamic";
 import CountdownTimer from "@/components/ui/CountdownTimer";
 import { EVENT } from "@/lib/constants";
 
+// GridScan uses browser APIs (WebGL) — must be client-only
+const GridScan = dynamic(() => import("@/components/ui/GridScan"), { ssr: false });
+
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden scanlines">
-      {/* LaserFlow background */}
+    <section className="relative min-h-screen flex flex-col items-center justify-center scanlines">
+      {/* GridScan background — React Bits original, colores Comicfest */}
       <div className="absolute inset-0">
-        <LaserFlow hue={48} speed={1.5} count={8} opacity={0.6} />
+        <GridScan
+          linesColor="#3d2a5e"
+          scanColor="#c9a227"
+          scanOpacity={0.85}
+          gridScale={0.12}
+          lineThickness={1.2}
+          lineJitter={0}
+          scanDirection="pingpong"
+          scanGlow={1.2}
+          scanSoftness={2.5}
+          scanDuration={2.5}
+          scanDelay={0.5}
+          scanPhaseTaper={0.15}
+          enablePost={true}
+          bloomIntensity={0.35}
+          bloomThreshold={0.1}
+          bloomSmoothing={0.3}
+          chromaticAberration={0.0015}
+          noiseIntensity={0.008}
+          sensitivity={0.4}
+          scanOnClick={true}
+        />
       </div>
 
-      {/* Deep gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-cf-black/50 via-transparent to-cf-black pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-cf-black/30 via-transparent to-cf-black/30 pointer-events-none" />
+      {/* Overlay: mejora legibilidad del texto sobre el grid */}
+      <div className="absolute inset-0 bg-gradient-to-b from-cf-black/55 via-cf-black/20 to-cf-black pointer-events-none" />
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -34,21 +58,21 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* Main headline */}
+        {/* Logo image */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.8 }}
-          className="mb-6"
+          className="mb-6 flex justify-center"
         >
-          <h1 className="font-display font-black text-cf-white leading-[0.9] tracking-tight">
-            <span className="block text-6xl sm:text-8xl md:text-[10rem] lg:text-[12rem] xl:text-[14rem] text-cf-white">
-              COMIC
-            </span>
-            <span className="block text-6xl sm:text-8xl md:text-[10rem] lg:text-[12rem] xl:text-[14rem] text-gradient">
-              FEST
-            </span>
-          </h1>
+          <Image
+            src="/images/logoCF.png"
+            alt="Comicfest Colombia"
+            width={600}
+            height={300}
+            className="object-contain drop-shadow-[0_0_60px_rgba(245,197,0,0.45)] w-[280px] sm:w-[400px] md:w-[520px] lg:w-[600px]"
+            priority
+          />
         </motion.div>
 
         {/* Subtitle */}
