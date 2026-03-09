@@ -37,7 +37,12 @@ export default function ActivitiesPreview() {
               initial={{ opacity: 0, y: 40 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: i * 0.08, duration: 0.6 }}
-              className={`group relative glass border border-cf-white/5 rounded-2xl p-6 md:p-8 overflow-hidden hover:border-cf-yellow/25 transition-all duration-300 cursor-pointer ${i === 0 ? "md:col-span-2 lg:col-span-1" : ""}`}
+              className={`group relative rounded-2xl p-6 md:p-8 overflow-hidden transition-all duration-300 cursor-pointer ${i === 0 ? "md:col-span-2 lg:col-span-1" : ""}`}
+              style={{
+                background: "linear-gradient(135deg, rgba(20,20,20,0.97) 0%, rgba(30,30,30,0.95) 100%)",
+                border: `1px solid ${activity.color}30`,
+                boxShadow: `0 0 24px ${activity.color}10`,
+              }}
             >
               {/* Background glow on hover */}
               <div
