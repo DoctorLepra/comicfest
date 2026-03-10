@@ -20,7 +20,7 @@
 * {
   box-sizing: border-box;
   margin: 0;
-  /* padding: 0; */
+  padding: 0;
 }
 
 html {
@@ -38,11 +38,9 @@ body {
 ::-webkit-scrollbar {
   width: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: #111111;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #f5c500;
   border-radius: 3px;
@@ -57,12 +55,6 @@ body {
 /* ── Utility classes ── */
 .font-display {
   font-family: "Space Grotesk", sans-serif;
-}
-
-/* ── Performance: skip paint/layout for off-screen sections ── */
-.section-below-fold {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 900px;
 }
 
 .text-gradient {
@@ -93,35 +85,33 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.08) 2px,
-      rgba(0, 0, 0, 0.08) 4px);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
   pointer-events: none;
   z-index: 1;
 }
 
 /* ── Animations ── */
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0px);
   }
-
   50% {
     transform: translateY(-12px);
   }
 }
 
 @keyframes pulse-glow {
-
   0%,
   100% {
     box-shadow: 0 0 20px rgba(245, 197, 0, 0.3);
   }
-
   50% {
     box-shadow: 0 0 40px rgba(245, 197, 0, 0.6);
   }
@@ -131,7 +121,6 @@ body {
   0% {
     transform: translateY(-100%);
   }
-
   100% {
     transform: translateY(100vh);
   }

@@ -77,10 +77,10 @@ export const ACTIVITIES = [
     subtitle: "Muestra tu mejor personaje",
     description:
       "El lugar perfecto para dar a conocer tu esfuerzo, dedicación y amor por el cosplay. Inscríbete y compite con los mejores cosplayers de Colombia.",
-    icon: "",
+    icon: "🎭",
     color: "#f5c500",
     badge: "COMPETENCIA",
-    image: "/images/cosplay.png",
+    image: "/images/cosplay.jpg",
     features: [
       "Categorías individual y grupal",
       "Premios en efectivo",
@@ -95,10 +95,10 @@ export const ACTIVITIES = [
     subtitle: "Saca tus mejores pasos",
     description:
       "Saca a relucir tus mejores pasos de KPOP y álzate a la victoria en nuestro campeonato grupal. Hasta 8 integrantes por equipo.",
-    icon: "",
+    icon: "🎤",
     color: "#ff6b9d",
     badge: "COMPETENCIA",
-    image: "/images/kpop.png",
+    image: "/images/kpop.jpg",
     features: [
       "Equipos de 2 a 8 personas",
       "Premios para los ganadores",
@@ -113,10 +113,10 @@ export const ACTIVITIES = [
     subtitle: "Nexus Cup Comicfest",
     description:
       "Demuestra tus habilidades en los mejores videojuegos del momento. Torneos con cupos limitados y premios para los campeones.",
-    icon: "",
+    icon: "🎮",
     color: "#00d4ff",
     badge: "TORNEO",
-    image: "/images/esports.png",
+    image: "/images/esports.jpg",
     features: [
       "Múltiples juegos disponibles",
       "Brackets en vivo",
@@ -125,52 +125,34 @@ export const ACTIVITIES = [
     ],
   },
   {
-    id: "bruce-challenge",
-    slug: "bruce-challenge",
-    title: "Bruce Challenge",
-    subtitle: "¿Puedes con el reto?",
+    id: "challenges",
+    slug: "challenges",
+    title: "Challenges",
+    subtitle: "Bruce & Glotonería Challenge",
     description:
-      "Pon a prueba tu fuerza y resistencia en el reto más épico del evento. ¿Tienes lo que se necesita para superar el Bruce Challenge?",
-    icon: "",
+      "¿Te atreves a superar los desafíos más épicos del evento? Bruce Challenge y Glotonería Challenge te esperan para poner a prueba tus límites.",
+    icon: "⚡",
     color: "#ff4444",
     badge: "ENTRETENIMIENTO",
-    image: "/images/bruce.png",
+    image: "/images/challenge.jpg",
     features: [
+      "Bruce Challenge",
+      "Glotonería Challenge",
       "Dinámicas en tiempo real",
       "Premios sorpresa",
-      "Apto para todas las edades",
-      "Clasificatorio por rondas",
-    ],
-  },
-  {
-    id: "glotoneria-challenge",
-    slug: "glotoneria-challenge",
-    title: "Glotonería Challenge",
-    subtitle: "Come más rápido que nadie",
-    description:
-      "El reto gastronómico más divertido del evento. ¿Quién puede comer más rápido? Compite y gana premios en este challenge lleno de sabor.",
-    icon: "",
-    color: "#ff8c00",
-    badge: "ENTRETENIMIENTO",
-    image: "/images/glotoneria.png",
-    features: [
-      "Challenge de velocidad",
-      "Premios para el ganador",
-      "Múltiples rondas",
-      "Espectador bienvenido",
     ],
   },
   {
     id: "cubo-rubik",
-    slug: "cubo-rubik",
+    slug: "esports",
     title: "Torneo Cubo Rubik",
     subtitle: "World Cube Association",
     description:
       "Competencia oficial avalada por la World Cube Association. Si eres speedcuber, este es tu momento de brillar.",
-    icon: "",
+    icon: "🧩",
     color: "#00ff88",
     badge: "TORNEO WCA",
-    image: "/images/rubik.png",
+    image: "/images/rubik.jpg",
     features: [
       "Avalado por World Cube Association",
       "Múltiples categorías",
@@ -181,10 +163,10 @@ export const ACTIVITIES = [
 ];
 
 export const STATS = [
-  { value: "250K+", label: "Asistentes en todo el país", icon: "" },
-  { value: "11", label: "Ciudades recorridas", icon: "" },
-  { value: "57K+", label: "Seguidores en Instagram", icon: "" },
-  { value: "120+", label: "Marcas convocadas", icon: "" },
+  { value: "250K+", label: "Asistentes en todo el país", icon: "👥" },
+  { value: "11", label: "Ciudades recorridas", icon: "📍" },
+  { value: "57K+", label: "Seguidores en Instagram", icon: "📱" },
+  { value: "120+", label: "Marcas convocadas", icon: "🏷️" },
 ];
 
 export const AGENDA = [
