@@ -45,19 +45,6 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.6 }}
-          className="inline-flex items-center gap-2 glass border border-cf-yellow/30 rounded-full px-4 py-2 mb-8"
-        >
-          <span className="w-2 h-2 rounded-full bg-cf-yellow animate-pulse" />
-          <span className="text-cf-yellow text-xs font-display font-semibold tracking-widest uppercase">
-            Pereira · Marzo 2026
-          </span>
-        </motion.div>
-
         {/* Logo image */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -73,6 +60,19 @@ export default function Hero() {
             className="object-contain drop-shadow-[0_0_60px_rgba(245,197,0,0.45)] w-[280px] sm:w-[400px] md:w-[520px] lg:w-[600px]"
             priority
           />
+        </motion.div>
+
+        {/* Badge — below logo, above subtitle */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="inline-flex items-center gap-2 glass border border-cf-yellow/30 rounded-full px-4 py-2 mb-6"
+        >
+          <span className="w-2 h-2 rounded-full bg-cf-yellow animate-pulse" />
+          <span className="text-cf-yellow text-xs font-display font-semibold tracking-widest uppercase">
+            Pereira · Marzo 2026
+          </span>
         </motion.div>
 
         {/* Subtitle */}
@@ -105,28 +105,6 @@ export default function Hero() {
             <Clock size={14} className="text-cf-yellow" />
             10:30 am – 7:30 pm
           </div>
-        </motion.div>
-
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
-        >
-          <Link
-            href="/entradas"
-            className="group flex items-center gap-2 bg-cf-yellow text-cf-black font-display font-black text-base px-8 py-4 rounded-xl hover:bg-cf-yellow-light transition-all duration-200 hover:scale-105 active:scale-95"
-          >
-            Comprar Entradas
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-          <Link
-            href="/actividades"
-            className="flex items-center gap-2 border border-cf-yellow/30 text-cf-white font-display font-bold text-base px-8 py-4 rounded-xl hover:border-cf-yellow/60 hover:text-cf-yellow transition-all duration-200"
-          >
-            Ver Actividades
-          </Link>
         </motion.div>
 
         {/* Countdown */}

@@ -31,7 +31,7 @@ export default function FaqSection() {
       </div>
 
       {/* ScrollStack centrado */}
-      <div className="flex justify-center w-full" style={{ height: "80vh" }}>
+      <div className="flex justify-center w-full overflow-hidden" style={{ height: "80vh" }}>
         <div className="w-full max-w-2xl">
           <ScrollStack
             useWindowScroll={false}

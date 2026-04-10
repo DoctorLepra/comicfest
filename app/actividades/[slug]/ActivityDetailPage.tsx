@@ -131,18 +131,12 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
 
                         {/* TyC link */}
                         {(slug === "copa-cosplay" || slug === "kpop") && (
-                            <a
-                                href={
-                                    slug === "copa-cosplay"
-                                        ? "https://www.comicfest.co/terminosycondiciones/copacosplay"
-                                        : "https://www.comicfest.co/terminos-y-condiciones/campeonatokpop"
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
+                            <Link
+                                href="/terminos"
                                 className="inline-flex items-center gap-2 text-xs font-display font-semibold border border-white/10 text-white/40 hover:text-white/70 hover:border-white/25 rounded-lg px-4 py-2.5 transition-all"
                             >
                                 <AlertCircle size={13} /> Leer Términos y Condiciones
-                            </a>
+                            </Link>
                         )}
                     </motion.div>
 

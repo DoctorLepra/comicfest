@@ -154,17 +154,17 @@ export default function EsportsPage() {
                                     <div className="flex flex-col h-full min-h-[420px]">
 
                                         {/* ── TiltedCard game cover ── */}
-                                        <div className="relative flex items-center justify-center pt-6 pb-2" style={{ background: `${t.color}08` }}>
+                                        <div className="relative" style={{ height: "220px" }}>
                                             <TiltedCard
                                                 imageSrc={t.image}
                                                 altText={t.title}
                                                 captionText={t.title}
-                                                containerHeight="200px"
-                                                containerWidth="140px"
-                                                imageHeight="200px"
-                                                imageWidth="140px"
-                                                scaleOnHover={1.06}
-                                                rotateAmplitude={12}
+                                                containerHeight="220px"
+                                                containerWidth="100%"
+                                                imageHeight="220px"
+                                                imageWidth="100%"
+                                                scaleOnHover={1.04}
+                                                rotateAmplitude={8}
                                                 showTooltip
                                             />
                                         </div>
