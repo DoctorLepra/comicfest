@@ -17,7 +17,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4" style={{ paddingTop: "80px" }}>
+    <div className="min-h-screen relative flex items-center justify-center px-4 py-32" style={{ paddingTop: "120px" }}>
 
       {/* Background */}
       <div className="absolute inset-0 z-0">
@@ -43,7 +43,7 @@ export default function LoginPage() {
 
       {/* Card */}
       <div
-        className="relative z-10 w-full max-w-md rounded-2xl p-8 md:p-10"
+        className="relative z-10 w-full max-w-md rounded-2xl p-8 md:p-14"
         style={{
           background: "linear-gradient(135deg, rgba(18,18,18,0.98) 0%, rgba(28,28,28,0.96) 100%)",
           border: "1px solid rgba(245,197,0,0.20)",
@@ -59,20 +59,20 @@ export default function LoginPage() {
         </Link>
 
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-12 text-center">
           <p className="text-cf-yellow text-[10px] font-display font-bold tracking-[0.4em] uppercase mb-2">
             Comicfest Colombia
           </p>
-          <h1 className="font-display text-3xl font-black text-white mb-1">
+          <h1 className="font-display text-3xl font-black text-white mb-2 text-center">
             Iniciar sesión
           </h1>
-          <p className="text-white/40 text-sm font-body">
+          <p className="text-white/40 text-sm font-body text-center">
             Accede a tu cuenta para gestionar tus entradas y actividades.
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
 
           {/* Email */}
           <div className="flex flex-col gap-1.5">
@@ -84,7 +84,7 @@ export default function LoginPage() {
               required
               autoComplete="email"
               placeholder="tu@correo.com"
-              className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
+              className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
             />
           </div>
 
@@ -99,7 +99,7 @@ export default function LoginPage() {
                 required
                 autoComplete="current-password"
                 placeholder="••••••••"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 pr-11 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
               />
               <button
                 type="button"
@@ -116,7 +116,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-display font-black text-sm transition-all hover:opacity-90 hover:scale-[1.02] disabled:opacity-50 disabled:scale-100"
+            className="mt-4 inline-flex items-center justify-center gap-2 px-6 py-5 rounded-xl font-display font-black text-sm transition-all hover:opacity-90 hover:scale-[1.02] disabled:opacity-50 disabled:scale-100"
             style={{ backgroundColor: "#f5c500", color: "#0a0a0a" }}
           >
             {loading ? (

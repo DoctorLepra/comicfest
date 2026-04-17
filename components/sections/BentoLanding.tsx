@@ -10,7 +10,7 @@ import SpotlightCard from "@/components/ui/SpotlightCard";
 
 /* ── Ticket styles ── */
 const TICKET_STYLES: Record<string, { spotlight: string; border: string; glow: string }> = {
-    general: { spotlight: "rgba(136, 136, 136, 0.18)", border: "rgba(136,136,136,0.2)", glow: "rgba(136,136,136,0.08)" },
+    general: { spotlight: "rgba(255, 255, 255, 0.22)", border: "rgba(255,255,255,0.28)", glow: "rgba(255,255,255,0.07)" },
     parche: { spotlight: "rgba(245, 197, 0, 0.22)", border: "rgba(245,197,0,0.5)", glow: "rgba(245,197,0,0.12)" },
     fullpass: { spotlight: "rgba(0, 212, 255, 0.18)", border: "rgba(0,212,255,0.28)", glow: "rgba(0,212,255,0.10)" },
 };
@@ -59,7 +59,7 @@ function DarkCard({
     );
 }
 
-/* ── Section header (centrado, como la web original) ── */
+/* ── Section header ── */
 function SectionHeader({ eyebrow, title }: { eyebrow: string; title?: string }) {
     return (
         <motion.div
@@ -67,15 +67,14 @@ function SectionHeader({ eyebrow, title }: { eyebrow: string; title?: string }) 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="text-center mb-10"
+            className="text-center mb-16"
         >
-            <p className="text-cf-yellow text-[11px] font-display font-semibold tracking-[0.4em] uppercase mb-2">
+            <p className="text-cf-yellow text-[11px] font-display font-semibold tracking-[0.4em] uppercase mb-5">
                 {eyebrow}
             </p>
             {title && (
-                <h2 className="font-display text-3xl md:text-4xl font-black text-white mb-4">{title}</h2>
+                <h2 className="font-display text-3xl md:text-4xl font-black text-white">{title}</h2>
             )}
-            <div className="w-16 h-1 bg-cf-yellow mx-auto" />
         </motion.div>
     );
 }
@@ -85,15 +84,15 @@ function SectionHeader({ eyebrow, title }: { eyebrow: string; title?: string }) 
 ───────────────────────────────────────────── */
 export default function BentoLanding() {
     return (
-        <section className="py-24 relative w-full">
-            <div className="flex flex-col gap-24 px-6 md:px-12">
+        <section className="py-32 relative w-full">
+            <div className="flex flex-col gap-40 px-6 md:px-12">
 
                 {/* ══════════════════════════════
                     1. ENTRADAS
                 ══════════════════════════════ */}
                 <div>
                     <SectionHeader eyebrow="Tus entradas" title="ACCEDE AL EVENTO" />
-                    <div className="grid md:grid-cols-3 gap-6">
+                    <div className="grid md:grid-cols-3 gap-10">
                         {TICKETS.map((ticket, i) => {
                             const colors = TICKET_STYLES[ticket.id] ?? TICKET_STYLES.general;
                             const isPopular = ticket.badge === "POPULAR";
@@ -104,11 +103,11 @@ export default function BentoLanding() {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.1, duration: 0.55 }}
-                                    className={isPopular ? "md:-mt-4 md:mb-4" : ""}
+                                    className="h-full"
                                 >
                                     <SpotlightCard
                                         spotlightColor={colors.spotlight as `rgba(${number}, ${number}, ${number}, ${number})`}
-                                        className="h-full rounded-2xl"
+                                        className="h-full rounded-2xl flex flex-col"
                                         style={{
                                             background: "linear-gradient(135deg, rgba(20,20,20,0.97) 0%, rgba(30,30,30,0.95) 100%)",
                                             border: `${isPopular ? "2px" : "1px"} solid ${colors.border}`,
@@ -116,30 +115,31 @@ export default function BentoLanding() {
                                         }}
                                     >
                                         {/* Badge top bar */}
-                                        {ticket.badge && (
-                                            <div
-                                                className={`py-2 text-center text-xs font-display font-black tracking-widest uppercase ${isPopular
-                                                    ? "bg-cf-yellow text-cf-black"
-                                                    : "bg-gradient-to-r from-cf-yellow-dark to-cf-yellow text-cf-black"
-                                                    }`}
-                                            >
-                                                {ticket.badge}
-                                            </div>
-                                        )}
-                                        <div className="p-7">
+                                        <div
+                                            className={`py-2 text-center text-xs font-display font-black tracking-widest uppercase ${
+                                                ticket.badge
+                                                    ? isPopular
+                                                        ? "bg-cf-yellow text-cf-black"
+                                                        : "bg-gradient-to-r from-cf-yellow-dark to-cf-yellow text-cf-black"
+                                                    : "opacity-0 pointer-events-none select-none"
+                                            }`}
+                                        >
+                                            {ticket.badge || "\u00A0"}
+                                        </div>
+                                        <div className="p-10 flex flex-col flex-1">
                                             <h3 className="font-display text-xl font-black text-cf-white mb-1">
                                                 {ticket.name}
                                             </h3>
-                                            <p className="text-cf-white/50 text-sm font-body mb-5">
+                                            <p className="text-cf-white/50 text-sm font-body mb-8">
                                                 {ticket.description}
                                             </p>
-                                            <div className="mb-6">
+                                            <div className="mb-10">
                                                 <span className="font-display text-4xl font-black text-gradient">
                                                     {ticket.priceLabel}
                                                 </span>
                                                 <span className="text-cf-white/40 text-sm font-body ml-2">COP</span>
                                             </div>
-                                            <ul className="space-y-2.5">
+                                            <ul className="space-y-4">
                                                 {ticket.features.map((f) => (
                                                     <li key={f} className="flex items-start gap-2.5 text-cf-white/60 text-sm font-body">
                                                         <Check size={13} className="text-cf-yellow shrink-0 mt-0.5" />
@@ -160,7 +160,7 @@ export default function BentoLanding() {
                 ══════════════════════════════ */}
                 <div>
                     <SectionHeader eyebrow="Lo que te espera" title="ACTIVIDADES" />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
                         {ACTIVITIES.map((activity, i) => {
                             const img = ACTIVITY_IMAGES[activity.slug];
                             const href = LINKS[activity.slug] ?? `/actividades/${activity.slug}`;
@@ -215,17 +215,17 @@ export default function BentoLanding() {
                                             </div>
 
                                             {/* ── Text content ── */}
-                                            <div className="p-6 flex flex-col flex-1">
+                                            <div className="p-8 md:p-10 flex flex-col flex-1">
                                                 <h2 className="font-display text-xl font-black text-cf-white mb-1 text-center">
                                                     {activity.title}
                                                 </h2>
-                                                <p className="text-cf-white/40 text-sm text-center mb-4">{activity.subtitle}</p>
+                                                <p className="text-cf-white/40 text-sm text-center mb-6">{activity.subtitle}</p>
 
-                                                <p className="text-cf-white/60 font-body text-sm leading-relaxed mb-5 flex-1">
+                                                <p className="text-cf-white/60 font-body text-sm leading-relaxed mb-8 flex-1">
                                                     {activity.description}
                                                 </p>
 
-                                                <ul className="space-y-1.5 mb-6">
+                                                <ul className="space-y-3 mb-10">
                                                     {activity.features.map((f) => (
                                                         <li key={f} className="flex items-center gap-2 text-cf-white/50 text-sm font-body">
                                                             <span
@@ -262,7 +262,6 @@ export default function BentoLanding() {
                         })}
                     </div>
                 </div>
-
 
             </div>
         </section>

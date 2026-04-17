@@ -26,7 +26,6 @@ export default function ActivitiesPreview() {
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-black text-cf-white">
             ACTIVIDADES
           </h2>
-          <div className="w-16 h-1 bg-cf-yellow mt-4" />
         </motion.div>
 
         {/* Bento grid */}

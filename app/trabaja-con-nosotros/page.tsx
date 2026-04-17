@@ -138,7 +138,7 @@ export default function TrabajaConNosotrosPage() {
               TRABAJA CON NOSOTROS
             </h1>
             <div className="w-16 h-1 bg-cf-yellow mx-auto mb-5" />
-            <p className="text-cf-white/60 font-body text-base md:text-lg max-w-2xl leading-relaxed">
+            <p className="text-cf-white/60 font-body text-lg md:text-xl max-w-2xl leading-relaxed">
               Bienvenido/a al proceso para el cargo de logística en ComicFest – PEREIRA 2026. Aquí encontrarás todo lo que debes saber sobre tus funciones, horarios y condiciones de participación.
             </p>
             <div className="mt-8">
@@ -169,10 +169,10 @@ export default function TrabajaConNosotrosPage() {
               <div className="w-11 h-11 rounded-xl glass border border-cf-yellow/20 flex items-center justify-center shrink-0">
                 <card.icon size={20} className="text-cf-yellow" />
               </div>
-              <h3 className="font-display font-black text-cf-white text-sm">{card.title}</h3>
+              <h3 className="font-display font-black text-cf-white text-base">{card.title}</h3>
               <ul className="space-y-1.5">
                 {card.items.map((item) => (
-                  <li key={item} className="text-cf-white/50 text-xs font-body leading-relaxed flex gap-1.5">
+                  <li key={item} className="text-cf-white/60 text-sm font-body leading-relaxed flex gap-2">
                     <span className="text-cf-yellow shrink-0">·</span>
                     {item}
                   </li>

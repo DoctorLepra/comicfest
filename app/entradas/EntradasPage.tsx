@@ -33,7 +33,7 @@ export default function EntradasPage() {
   const inView = useInView(ref, { once: true });
 
   return (
-    <div className="min-h-screen" style={{ paddingTop: "80px" }}>
+    <div className="min-h-screen" style={{ paddingTop: "120px" }}>
 
       {/* ── Hero header con Squares background (igual que Agenda) ── */}
       <section className="relative overflow-hidden" style={{ height: "340px" }}>
@@ -60,13 +60,13 @@ export default function EntradasPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65 }}
           >
-            <p className="text-cf-yellow text-xs font-display font-semibold tracking-[0.4em] uppercase mb-4">
+            <p className="text-cf-yellow text-xs font-display font-semibold tracking-[0.4em] uppercase mb-6">
               Pereira · Marzo 2026
             </p>
-            <h1 className="font-display text-6xl md:text-8xl font-black text-cf-white leading-none mb-5">
+            <h1 className="font-display text-6xl md:text-8xl font-black text-cf-white leading-none mb-8">
               ENTRADAS
             </h1>
-            <div className="w-16 h-1 bg-cf-yellow mx-auto mb-5" />
+            <div className="w-16 h-1 bg-cf-yellow mx-auto mb-8" />
             <p className="text-cf-white/60 font-body text-base md:text-lg max-w-xl leading-relaxed">
               Elige tu tipo de entrada. Las boletas parche e individual son válidas para un día.
             </p>
@@ -75,10 +75,10 @@ export default function EntradasPage() {
       </section>
 
       {/* ── Contenido centrado ── */}
-      <div ref={ref} className="px-6 md:px-12 pb-20 pt-16 flex flex-col items-center">
+      <div ref={ref} className="px-6 md:px-12 pb-32 pt-24 flex flex-col items-center">
 
         {/* Tickets grid */}
-        <div className="grid md:grid-cols-3 gap-6 w-full max-w-5xl mb-16">
+        <div className="grid md:grid-cols-3 gap-10 w-full max-w-5xl mb-24">
           {TICKETS.map((ticket, i) => {
             const colors = TICKET_COLORS[ticket.id] ?? TICKET_COLORS.general;
             const isPopular = ticket.badge === "POPULAR";
@@ -113,22 +113,22 @@ export default function EntradasPage() {
                     </div>
                   )}
 
-                  <div className="p-8">
-                    <h2 className="font-display text-xl font-black text-cf-white mb-1">
+                  <div className="p-10 md:p-12">
+                    <h2 className="font-display text-xl font-black text-cf-white mb-2">
                       {ticket.name}
                     </h2>
-                    <p className="text-cf-white/50 text-sm font-body mb-6">
+                    <p className="text-cf-white/50 text-sm font-body mb-10">
                       {ticket.description}
                     </p>
 
-                    <div className="mb-8">
+                    <div className="mb-12">
                       <span className="font-display text-4xl font-black text-gradient">
                         {ticket.priceLabel}
                       </span>
                       <span className="text-cf-white/40 text-sm font-body ml-2">COP</span>
                     </div>
 
-                    <ul className="space-y-3 mb-8">
+                    <ul className="space-y-4 mb-12">
                       {ticket.features.map((f) => (
                         <li key={f} className="flex items-start gap-2.5 text-cf-white/60 text-sm font-body">
                           <Check size={14} className="text-cf-yellow shrink-0 mt-0.5" />
@@ -141,7 +141,7 @@ export default function EntradasPage() {
                       href={`https://wa.me/57${EVENT.whatsappTickets}`}
                       target="_blank"
                       rel="noreferrer"
-                      className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-display font-bold text-sm transition-all duration-200 hover:scale-105 ${isPopular
+                      className={`w-full flex items-center justify-center gap-2 py-5 rounded-xl font-display font-bold text-sm transition-all duration-200 hover:scale-105 ${isPopular
                           ? "bg-cf-yellow text-cf-black hover:bg-cf-yellow-light"
                           : "border border-cf-yellow/30 text-cf-yellow hover:border-cf-yellow/60 hover:bg-cf-yellow/5"
                         }`}
@@ -161,7 +161,7 @@ export default function EntradasPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="glass border border-cf-yellow/15 rounded-2xl p-8 md:p-10 w-full max-w-5xl"
+          className="glass border border-cf-yellow/15 rounded-2xl p-10 md:p-14 w-full max-w-5xl"
         >
           <h3 className="font-display text-xl font-black text-cf-white mb-4">
             Información importante

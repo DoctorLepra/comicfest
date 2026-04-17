@@ -17,10 +17,14 @@
   --font-body: "Inter", sans-serif;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, figure {
   margin: 0;
-  /* padding: 0; */
 }
 
 html {
@@ -54,9 +58,16 @@ body {
   color: #0a0a0a;
 }
 
-/* ── Utility classes ── */
+/* ── Typography utilities ── */
 .font-display {
   font-family: "Space Grotesk", sans-serif;
+}
+
+/* All card & section headings → always all-caps */
+h1.font-display,
+h2.font-display,
+h3.font-display {
+  text-transform: uppercase;
 }
 
 /* ── Performance: skip paint/layout for off-screen sections ── */

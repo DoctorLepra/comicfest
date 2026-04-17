@@ -53,7 +53,7 @@ export default function PageLoader() {
           </div>
 
           {/* Overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cf-black/30 to-cf-black/80 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-cf-black/80 pointer-events-none" />
 
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center gap-8 px-6 text-center">

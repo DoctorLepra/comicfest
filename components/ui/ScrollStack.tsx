@@ -328,6 +328,20 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
         updateCardTransforms,
     ]);
 
+    /* ── Window-scroll mode: cards live in normal page flow ── */
+    if (useWindowScroll) {
+        return (
+            <div
+                ref={scrollerRef}
+                className={`relative w-full ${className}`.trim()}
+            >
+                {children}
+                <div className="scroll-stack-end w-full h-px" />
+            </div>
+        );
+    }
+
+    /* ── Internal-scroll mode: contained scroller ── */
     return (
         <div
             className={`relative w-full h-full overflow-y-auto overflow-x-visible ${className}`.trim()}

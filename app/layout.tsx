@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
-import Footer from "@/components/ui/Footer";
 import PageLoader from "@/components/ui/PageLoader";
+import ClientLayout from "@/components/ui/ClientLayout";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -62,8 +62,7 @@ export default function RootLayout({
       <body className="bg-cf-black text-cf-white font-body antialiased">
         <PageLoader />
         <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

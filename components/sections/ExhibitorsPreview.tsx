@@ -43,11 +43,10 @@ export default function ExhibitorsPreview() {
             <p className="text-cf-yellow text-xs font-display font-semibold tracking-[0.4em] uppercase mb-3">
               Para expositores
             </p>
-            <h2 className="font-display text-4xl md:text-5xl font-black text-cf-white mb-4">
+            <h2 className="font-display text-4xl md:text-5xl font-black text-cf-white mb-8">
               LLEVA TU MARCA<br />
               <span className="text-gradient">AL SIGUIENTE NIVEL</span>
             </h2>
-            <div className="w-16 h-1 bg-cf-yellow mb-8" />
             <p className="text-cf-white/60 font-body text-base leading-relaxed mb-8">
               ¿Tienes una marca relacionada a la cultura pop? En Comicfest
               tendrás acceso a más de 15.000 usuarios potenciales por edición.

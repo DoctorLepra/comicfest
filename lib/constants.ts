@@ -29,7 +29,7 @@ export const TICKETS = [
     price: 20000,
     priceLabel: "$20.000",
     description: "Acceso por un día al evento",
-    badge: "",
+    badge: "BÁSICO",
     color: "border-cf-gray",
     features: [
       "Acceso a zona de exposiciones",

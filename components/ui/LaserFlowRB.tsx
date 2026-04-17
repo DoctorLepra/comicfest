@@ -170,7 +170,7 @@ uniform float uFade;
             sum+=amp*lat*seg1;
         }
     }
-    float span=smoothstep(-3.0,0.0,y)*(1.0-smoothstep(R_V-6.0,R_V,y));
+    float span=smoothstep(-60.0,20.0,y)*(1.0-smoothstep(R_V-6.0,R_V,y));
     return uWIntensity*sum*topF*bGain*span;
 }
 
@@ -199,7 +199,7 @@ void mainImage(out vec4 fc,in vec2 frag){
         env*=mix(1.0-uFlowStrength,1.0,fl);
         float yp=(-R_V*uVLenFactor)*cos(tu),m=pow(smoothstep(FLARE_HEIGHT,0.0,yp),FLARE_EXP),wx=1.0+FLARE_AMOUNT*m;
         vec2 sig=vec2(wx,1.0),p=vec2(0.0,yp);
-        float mask=step(0.0,yp);
+        float mask=smoothstep(-40.0,10.0,yp);
         b+=wt*bsa(uvc,p,mask*env,sig);
     }
     float sPix=clamp(yPix/R_V,0.0,1.0),topA=pow(1.0-smoothstep(TOP_FADE_START,1.0,sPix),TOP_FADE_EXP);

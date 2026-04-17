@@ -18,7 +18,7 @@ export default function RegistroPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 py-24" style={{ paddingTop: "120px" }}>
+    <div className="min-h-screen relative flex items-center justify-center px-4 py-32" style={{ paddingTop: "140px" }}>
 
       {/* Background */}
       <div className="absolute inset-0 z-0">
@@ -44,7 +44,7 @@ export default function RegistroPage() {
 
       {/* Card */}
       <div
-        className="relative z-10 w-full max-w-xl rounded-2xl p-8 md:p-10 my-8"
+        className="relative z-10 w-full max-w-xl rounded-2xl p-8 md:p-14 my-8"
         style={{
           background: "linear-gradient(135deg, rgba(18,18,18,0.98) 0%, rgba(28,28,28,0.96) 100%)",
           border: "1px solid rgba(245,197,0,0.20)",
@@ -60,22 +60,22 @@ export default function RegistroPage() {
         </Link>
 
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-12 text-center">
           <p className="text-cf-yellow text-[10px] font-display font-bold tracking-[0.4em] uppercase mb-2">
             Registro de expositores
           </p>
-          <h1 className="font-display text-3xl font-black text-white mb-2">
+          <h1 className="font-display text-3xl font-black text-white mb-2 text-center">
             Crear cuenta
           </h1>
-          <p className="text-white/40 text-sm font-body">
+          <p className="text-white/40 text-sm font-body text-center">
             Únete como expositor a la convención de cultura pop más grande del eje cafetero.
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Nombre */}
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-display font-semibold text-white/55 uppercase tracking-widest">
@@ -85,7 +85,7 @@ export default function RegistroPage() {
                 type="text"
                 required
                 placeholder="Tu nombre"
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
+                className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
               />
             </div>
 
@@ -98,12 +98,12 @@ export default function RegistroPage() {
                 type="text"
                 required
                 placeholder="Tus apellidos"
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
+                className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Teléfono */}
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-display font-semibold text-white/55 uppercase tracking-widest">
@@ -113,7 +113,7 @@ export default function RegistroPage() {
                 type="tel"
                 required
                 placeholder="Número de celular"
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
+                className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
               />
             </div>
 
@@ -126,7 +126,7 @@ export default function RegistroPage() {
                 type="url"
                 required
                 placeholder="https://instagram.com/tumarca"
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
+                className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
               />
             </div>
           </div>
@@ -140,7 +140,7 @@ export default function RegistroPage() {
               type="text"
               required
               placeholder="¿Cómo se llama tu emprendimiento?"
-              className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
+              className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
             />
           </div>
 
@@ -154,7 +154,7 @@ export default function RegistroPage() {
               required
               autoComplete="email"
               placeholder="tu@correo.com"
-              className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
+              className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
             />
           </div>
 
@@ -169,7 +169,7 @@ export default function RegistroPage() {
                 required
                 autoComplete="new-password"
                 placeholder="••••••••"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 pr-11 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-cf-yellow/40 transition-colors"
               />
               <button
                 type="button"
@@ -189,7 +189,7 @@ export default function RegistroPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-4 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-display font-black text-sm transition-all hover:opacity-90 hover:scale-[1.02] disabled:opacity-50 disabled:scale-100"
+            className="mt-6 inline-flex items-center justify-center gap-2 px-6 py-5 rounded-xl font-display font-black text-sm transition-all hover:opacity-90 hover:scale-[1.02] disabled:opacity-50 disabled:scale-100"
             style={{ backgroundColor: "#f5c500", color: "#0a0a0a" }}
           >
             {loading ? (

@@ -94,10 +94,11 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
                     className="mb-10"
                 >
                     <Link
-                        href="/actividades"
-                        className="inline-flex items-center gap-2 text-white/40 hover:text-cf-yellow text-sm font-display font-semibold transition-colors"
+                        href="/"
+                        className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
+                        style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
                     >
-                        <ArrowLeft size={15} /> Todas las actividades
+                        <ArrowLeft size={15} /> Volver al inicio
                     </Link>
                 </motion.div>
 
@@ -133,9 +134,10 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
                         {(slug === "copa-cosplay" || slug === "kpop") && (
                             <Link
                                 href="/terminos"
-                                className="inline-flex items-center gap-2 text-xs font-display font-semibold border border-white/10 text-white/40 hover:text-white/70 hover:border-white/25 rounded-lg px-4 py-2.5 transition-all"
+                                className="inline-flex items-center gap-2 text-sm font-display font-bold px-5 py-3 rounded-xl transition-all hover:opacity-80"
+                                style={{ backgroundColor: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.70)", border: "1px solid rgba(255,255,255,0.15)" }}
                             >
-                                <AlertCircle size={13} /> Leer Términos y Condiciones
+                                <AlertCircle size={14} /> Términos y Condiciones
                             </Link>
                         )}
                     </motion.div>

@@ -36,21 +36,21 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
   ];
 
   return (
-    <div className="flex items-center gap-3 md:gap-4">
+    <div className="flex items-center gap-5 md:gap-7">
       {units.map(({ value, label }, i) => (
-        <div key={label} className="flex items-center gap-3 md:gap-4">
+        <div key={label} className="flex items-center gap-5 md:gap-7">
           <div className="flex flex-col items-center">
-            <div className="glass border border-cf-yellow/20 rounded-xl px-3 py-2 md:px-5 md:py-3 min-w-[56px] md:min-w-[72px] text-center">
-              <span className="font-display text-2xl md:text-4xl font-black text-cf-white tabular-nums leading-none">
+            <div className="glass border border-cf-yellow/20 rounded-xl px-4 py-3 md:px-7 md:py-5 min-w-[64px] md:min-w-[84px] text-center">
+              <span className="font-display text-3xl md:text-5xl font-black text-cf-white tabular-nums leading-none">
                 {String(value).padStart(2, "0")}
               </span>
             </div>
-            <span className="text-cf-white/40 text-[10px] md:text-xs font-body uppercase tracking-widest mt-1.5">
+            <span className="text-cf-white/40 text-[10px] md:text-xs font-body uppercase tracking-widest mt-3">
               {label}
             </span>
           </div>
           {i < 3 && (
-            <span className="font-display text-xl md:text-3xl font-black text-cf-yellow/50 -mt-4">:</span>
+            <span className="font-display text-2xl md:text-4xl font-black text-cf-yellow/50 -mt-6">:</span>
           )}
         </div>
       ))}
