@@ -22,6 +22,7 @@ const NAV: NavItem[] = [
     dropdown: [
       { label: "Copa Cosplay", href: "/actividades/copa-cosplay" },
       { label: "Campeonato KPOP", href: "/actividades/kpop" },
+      { label: "Torneos Esports", href: "/actividades/esports" },
     ],
   },
   {

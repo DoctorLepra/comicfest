@@ -155,3 +155,10 @@ h3.font-display {
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
+
+/* ── Spacing utilities for Cards ── */
+.card-action-spacing {
+  margin-top: auto;
+  padding-top: 2rem;
+  width: 100%;
+}

@@ -3,15 +3,32 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Users, TrendingUp, Building2, Globe, Map } from "lucide-react";
+import { ArrowRight, ArrowLeft, Map } from "lucide-react";
+import Image from "next/image";
 import { EVENT } from "@/lib/constants";
 import Squares from "@/components/ui/Squares";
 
-const REASONS = [
-  { icon: Users, title: "15.000+ visitantes", desc: "Accede a miles de clientes potenciales por edición" },
-  { icon: TrendingUp, title: "120+ marcas", desc: "Forma parte del ecosistema de marcas de cultura pop más grande del país" },
-  { icon: Globe, title: "11 ciudades", desc: "Expande tu presencia a nivel nacional con nosotros" },
-  { icon: Building2, title: "Stands flexibles", desc: "Desde 6m² hasta 24m² para adaptarse a tu negocio" },
+const METRICS = [
+  {
+    title: "250K+",
+    desc: "Asistentes al rededor del pais",
+    image: "/images/asistentes.png",
+  },
+  {
+    title: "11",
+    desc: "Ciudades recorridas",
+    image: "/images/ciudades.png",
+  },
+  {
+    title: "57K+",
+    desc: "Seguidores en Instagram.",
+    image: "/images/seguidores.png",
+  },
+  {
+    title: "120+",
+    desc: "Marcas convocadas a nivel nacional",
+    image: "/images/marcas-convocadas.png",
+  }
 ];
 
 export default function ExpositoresPage() {
@@ -60,22 +77,79 @@ export default function ExpositoresPage() {
         </div>
       </section>
 
-      {/* ── Reasons grid ── */}
-      <div ref={ref} className="px-6 md:px-12 pt-24 pb-16 flex flex-col items-center">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-5xl">
-          {REASONS.map((r, i) => (
-            <motion.div
-              key={r.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-              className="glass border border-cf-white/5 rounded-2xl p-8 hover:border-cf-yellow/20 transition-all duration-300 flex flex-col gap-5"
+      {/* ── Back link ── */}
+      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-10">
+        <motion.div
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+        >
+            <Link
+                href="/"
+                className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
+                style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
             >
-              <div className="w-12 h-12 rounded-xl glass border border-cf-yellow/20 flex items-center justify-center shrink-0">
-                <r.icon size={22} className="text-cf-yellow" />
+                <ArrowLeft size={15} /> Volver al inicio
+            </Link>
+        </motion.div>
+      </div>
+
+      {/* ── Metrics grid ── */}
+      <div ref={ref} className="px-6 md:px-12 pt-28 pb-16 flex flex-col items-center overflow-hidden">
+        
+        {/* Title: NUESTRAS METRICAS with side lines */}
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.6 }}
+            className="flex items-center justify-center w-full max-w-6xl mb-16 gap-6"
+        >
+          <div className="h-[2px] bg-white/20 flex-1"></div>
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black text-cf-yellow tracking-tight uppercase whitespace-nowrap">
+            NUESTRAS METRICAS
+          </h2>
+          <div className="h-[2px] bg-white/20 flex-1"></div>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full max-w-7xl">
+          {METRICS.map((m, i) => (
+            <motion.div
+              key={m.title}
+              initial={{ opacity: 0, y: 50 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: i * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="relative h-[440px] md:h-[500px] w-full rounded-[32px] overflow-hidden group border border-white/10 mx-auto max-w-[340px] sm:max-w-none"
+              style={{ boxShadow: "0 10px 40px rgba(0,0,0,0.5)" }}
+            >
+              {/* Background Image */}
+              <Image 
+                src={m.image}
+                alt={m.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                className="object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
+              />
+              
+              {/* Dark gradient overlay for text readability */}
+              <div 
+                className="absolute inset-0"
+                style={{ 
+                  background: "linear-gradient(to top, rgba(15,15,15,0.98) 0%, rgba(15,15,15,0.6) 35%, transparent 100%)" 
+                }}
+              />
+              
+              {/* Content positioned at bottom */}
+              <div className="absolute inset-0 p-8 flex flex-col justify-end text-center z-10 transition-transform duration-500 group-hover:-translate-y-3">
+                  <h3 
+                    className="font-display text-[54px] leading-[1.1] font-black mb-3 drop-shadow-2xl"
+                    style={{ color: "#f5c500" }}
+                  >
+                    {m.title}
+                  </h3>
+                  <p className="font-display font-black text-cf-white text-lg md:text-xl leading-tight drop-shadow-xl w-[90%] mx-auto">
+                    {m.desc}
+                  </p>
               </div>
-              <h3 className="font-display font-black text-cf-white">{r.title}</h3>
-              <p className="text-cf-white/50 text-sm font-body leading-relaxed">{r.desc}</p>
             </motion.div>
           ))}
         </div>

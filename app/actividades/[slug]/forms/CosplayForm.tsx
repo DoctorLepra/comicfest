@@ -74,8 +74,7 @@ export default function CosplayForm({ accentColor }: CosplayFormProps) {
       {/* Nombre */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          Nombre completo *
-        </label>
+          Nombre completo <span className="text-red-500">*</span></label>
         <input
           type="text"
           required
@@ -87,8 +86,7 @@ export default function CosplayForm({ accentColor }: CosplayFormProps) {
       {/* Categoría */}
       <div className="flex flex-col gap-2">
         <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          Categoría *
-        </label>
+          Categoría <span className="text-red-500">*</span></label>
         <div className="flex gap-3">
           {(["individual", "grupal"] as const).map((cat) => (
             <button
@@ -111,8 +109,7 @@ export default function CosplayForm({ accentColor }: CosplayFormProps) {
       {/* Personaje */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          Personaje a representar *
-        </label>
+          Personaje a representar <span className="text-red-500">*</span></label>
         <input
           type="text"
           required
@@ -137,8 +134,7 @@ export default function CosplayForm({ accentColor }: CosplayFormProps) {
       {categoria === "grupal" && (
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-            Número de integrantes *
-          </label>
+            Número de integrantes <span className="text-red-500">*</span></label>
           <input
             type="number"
             required
@@ -153,8 +149,7 @@ export default function CosplayForm({ accentColor }: CosplayFormProps) {
       {/* WhatsApp */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          WhatsApp de contacto *
-        </label>
+          WhatsApp de contacto <span className="text-red-500">*</span></label>
         <input
           type="tel"
           required

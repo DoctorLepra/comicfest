@@ -221,11 +221,11 @@ export default function BentoLanding() {
                                                 </h2>
                                                 <p className="text-cf-white/40 text-sm text-center mb-6">{activity.subtitle}</p>
 
-                                                <p className="text-cf-white/60 font-body text-sm leading-relaxed mb-8 flex-1">
+                                                <p className="text-cf-white/60 font-body text-sm leading-relaxed mb-6">
                                                     {activity.description}
                                                 </p>
 
-                                                <ul className="space-y-3 mb-10">
+                                                <ul className="space-y-3 mb-8">
                                                     {activity.features.map((f) => (
                                                         <li key={f} className="flex items-center gap-2 text-cf-white/50 text-sm font-body">
                                                             <span
@@ -238,20 +238,22 @@ export default function BentoLanding() {
                                                 </ul>
 
                                                 {(activity.slug === "copa-cosplay" || activity.slug === "kpop" || activity.slug === "esports") && (
-                                                    <Link
-                                                        href={href}
-                                                        target={isExternal ? "_blank" : undefined}
-                                                        rel={isExternal ? "noopener noreferrer" : undefined}
-                                                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-display font-bold text-sm transition-all hover:opacity-80 mt-auto"
-                                                        style={{
-                                                            backgroundColor: `${activity.color}20`,
-                                                            color: activity.color,
-                                                            border: `1px solid ${activity.color}40`,
-                                                        }}
-                                                    >
-                                                        {activity.slug === "copa-cosplay" || activity.slug === "kpop" ? "Inscribirse" : "Ver torneos"}
-                                                        <ArrowRight size={13} />
-                                                    </Link>
+                                                    <div className="card-action-spacing">
+                                                        <Link
+                                                            href={href}
+                                                            target={isExternal ? "_blank" : undefined}
+                                                            rel={isExternal ? "noopener noreferrer" : undefined}
+                                                            className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-display font-bold text-sm transition-all hover:scale-[1.02]"
+                                                            style={{
+                                                                backgroundColor: `${activity.color}15`,
+                                                                color: activity.color,
+                                                                border: `1px solid ${activity.color}40`,
+                                                            }}
+                                                        >
+                                                            {activity.slug === "copa-cosplay" || activity.slug === "kpop" ? "Inscribirse" : "Ver torneos"}
+                                                            <ArrowRight size={14} />
+                                                        </Link>
+                                                    </div>
                                                 )}
                                             </div>
 

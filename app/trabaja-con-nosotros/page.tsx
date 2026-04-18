@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Camera, Clock, Shirt, DollarSign, Send, ChevronDown, Upload,
+  Camera, Clock, Shirt, DollarSign, Send, ChevronDown, Upload, CheckCircle, ArrowLeft
 } from "lucide-react";
+import Link from "next/link";
 import Squares from "@/components/ui/Squares";
 
 /* ─── Shared styles ─── */
@@ -99,6 +100,7 @@ export default function TrabajaConNosotrosPage() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [trabajoPrevio, setTrabajoPrevio] = useState(false);
+  const accentColor = "#f5c500";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -153,6 +155,23 @@ export default function TrabajaConNosotrosPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* ── Back link ── */}
+      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-10">
+        <motion.div
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+        >
+            <Link
+                href="/"
+                className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
+                style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
+            >
+                <ArrowLeft size={15} /> Volver al inicio
+            </Link>
+        </motion.div>
+      </div>
 
       {/* ── Info cards ── */}
       <div className="px-6 md:px-12 pt-16 pb-8 flex flex-col items-center">
@@ -211,7 +230,7 @@ export default function TrabajaConNosotrosPage() {
       </div>
 
       {/* ── Formulario ── */}
-      <div id="formulario" className="px-6 md:px-12 pb-24 pt-10 flex flex-col items-center">
+      <div id="formulario" className="px-6 md:px-12 pb-24 pt-10 flex flex-col items-center scroll-mt-28">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -219,31 +238,57 @@ export default function TrabajaConNosotrosPage() {
           transition={{ duration: 0.6 }}
           className="w-full max-w-3xl"
         >
-          <h2 className="font-display text-3xl md:text-4xl font-black text-cf-white text-center mb-2">
-            ¡REGÍSTRATE!
-          </h2>
-          <div className="w-12 h-1 bg-cf-yellow mx-auto mb-10" />
-
           {sent ? (
-            <div className="glass border border-cf-yellow/20 rounded-2xl p-12 text-center">
-              <p className="text-cf-yellow font-display font-black text-2xl mb-3">¡Formulario enviado!</p>
-              <p className="text-cf-white/60 font-body text-base">
-                Nos pondremos en contacto contigo pronto. ¡Gracias por querer ser parte del equipo ComicFest!
-              </p>
+            <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}>
+              <div
+                className="w-full max-w-md rounded-2xl p-10 flex flex-col items-center text-center gap-5"
+                style={{
+                  background: "linear-gradient(135deg, rgba(18,18,18,0.99) 0%, rgba(28,28,28,0.97) 100%)",
+                  border: `1px solid ${accentColor}40`,
+                  boxShadow: `0 0 60px ${accentColor}18, 0 24px 48px rgba(0,0,0,0.6)`,
+                }}
+              >
+                <CheckCircle size={56} style={{ color: accentColor }} />
+                <div>
+                  <h3 className="font-display text-2xl font-black text-white mb-2 uppercase">¡REGISTRO ENVIADO!</h3>
+                  <p className="text-white/55 font-body text-sm leading-relaxed">
+                    Nos pondremos en contacto contigo pronto. ¡Gracias por querer ser parte del equipo ComicFest!
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSent(false)}
+                  className="mt-2 inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl font-display font-black text-sm transition-all hover:opacity-90 hover:scale-[1.02]"
+                  style={{ backgroundColor: accentColor, color: "#0a0a0a" }}
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="glass border border-cf-white/8 rounded-2xl p-8 md:p-10 flex flex-col gap-6">
+            <form 
+              onSubmit={handleSubmit} 
+              className="rounded-2xl p-7 md:p-10 flex flex-col gap-6"
+              style={{
+                background: "rgba(20,20,20,0.97)",
+                border: `1px solid ${accentColor}30`,
+                boxShadow: `0 0 32px ${accentColor}12`,
+              }}
+            >
+              <div>
+                <h3 className="font-display text-2xl font-black text-white mb-1">¡REGÍSTRATE!</h3>
+                <p className="text-white/40 text-sm font-body">Completa tus datos para postularte al equipo de logística.</p>
+              </div>
 
               {/* Nombre completo */}
               <div>
-                <label className={labelClass}>Nombre Completo <span className="text-red-400">*</span></label>
+                <label className={labelClass}>Nombre Completo <span className="text-red-500">*</span></label>
                 <input type="text" required className={inputClass} />
               </div>
 
               {/* Tipo de documento + Número de documento */}
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="relative">
-                  <label className={labelClass}>Tipo de documento <span className="text-red-400">*</span></label>
+                  <label className={labelClass}>Tipo de documento <span className="text-red-500">*</span></label>
                   <select required className={selectClass} style={selectStyle} defaultValue="">
                     <option value="" disabled style={optStyle}>Selecciona</option>
                     {TIPO_DOC.map((t) => <option key={t} value={t} style={optStyle}>{t}</option>)}
@@ -251,21 +296,21 @@ export default function TrabajaConNosotrosPage() {
                   <ChevronDown size={14} className="absolute right-3 bottom-3.5 text-cf-white/30 pointer-events-none" />
                 </div>
                 <div>
-                  <label className={labelClass}>Número de documento <span className="text-red-400">*</span></label>
+                  <label className={labelClass}>Número de documento <span className="text-red-500">*</span></label>
                   <input type="text" required className={inputClass} />
                 </div>
               </div>
 
               {/* Número de teléfono */}
               <div>
-                <label className={labelClass}>Número de teléfono <span className="text-red-400">*</span></label>
+                <label className={labelClass}>Número de teléfono <span className="text-red-500">*</span></label>
                 <input type="tel" required className={inputClass} />
               </div>
 
               {/* Ciudad + Grupo sanguíneo */}
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="relative">
-                  <label className={labelClass}>Ciudad <span className="text-red-400">*</span></label>
+                  <label className={labelClass}>Ciudad <span className="text-red-500">*</span></label>
                   <select required className={selectClass} style={selectStyle} defaultValue="">
                     <option value="" disabled style={optStyle}>Selecciona</option>
                     {CIUDADES.map((c) => <option key={c} value={c} style={optStyle}>{c}</option>)}
@@ -273,7 +318,7 @@ export default function TrabajaConNosotrosPage() {
                   <ChevronDown size={14} className="absolute right-3 bottom-3.5 text-cf-white/30 pointer-events-none" />
                 </div>
                 <div className="relative">
-                  <label className={labelClass}>Grupo sanguíneo <span className="text-red-400">*</span></label>
+                  <label className={labelClass}>Grupo sanguíneo <span className="text-red-500">*</span></label>
                   <select required className={selectClass} style={selectStyle} defaultValue="">
                     <option value="" disabled style={optStyle}>Selecciona</option>
                     {SANGRE.map((s) => <option key={s} value={s} style={optStyle}>{s}</option>)}
@@ -295,7 +340,7 @@ export default function TrabajaConNosotrosPage() {
               {/* Archivos */}
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <label className={labelClass}>Cédula escaneada (PDF) <span className="text-red-400">*</span></label>
+                  <label className={labelClass}>Cédula escaneada (PDF) <span className="text-red-500">*</span></label>
                   <label className="flex items-center gap-3 w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 cursor-pointer hover:border-cf-yellow/30 transition-colors">
                     <Upload size={16} className="text-cf-yellow shrink-0" />
                     <span className="text-cf-white/40 text-sm font-body truncate">Subir archivo PDF</span>
@@ -303,7 +348,7 @@ export default function TrabajaConNosotrosPage() {
                   </label>
                 </div>
                 <div>
-                  <label className={labelClass}>RUT (PDF) <span className="text-red-400">*</span></label>
+                  <label className={labelClass}>RUT (PDF) <span className="text-red-500">*</span></label>
                   <label className="flex items-center gap-3 w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 cursor-pointer hover:border-cf-yellow/30 transition-colors">
                     <Upload size={16} className="text-cf-yellow shrink-0" />
                     <span className="text-cf-white/40 text-sm font-body truncate">Subir archivo PDF</span>

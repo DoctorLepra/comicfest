@@ -66,8 +66,7 @@ export default function GenericForm({ activity, accentColor }: GenericFormProps)
       {/* Nombre */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          Nombre completo *
-        </label>
+          Nombre completo <span className="text-red-500">*</span></label>
         <input
           type="text"
           required
@@ -91,8 +90,7 @@ export default function GenericForm({ activity, accentColor }: GenericFormProps)
       {/* WhatsApp */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          WhatsApp *
-        </label>
+          WhatsApp <span className="text-red-500">*</span></label>
         <input
           type="tel"
           required

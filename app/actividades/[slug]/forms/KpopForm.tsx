@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Send, CheckCircle } from "lucide-react";
+import { Send, CheckCircle, Upload } from "lucide-react";
 
 interface KpopFormProps {
   accentColor: string;
@@ -10,6 +10,7 @@ interface KpopFormProps {
 export default function KpopForm({ accentColor }: KpopFormProps) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [numParticipantes, setNumParticipantes] = useState<number>(3);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -17,6 +18,16 @@ export default function KpopForm({ accentColor }: KpopFormProps) {
     await new Promise((r) => setTimeout(r, 1200));
     setLoading(false);
     setSubmitted(true);
+  };
+
+  const handleNumParticipantesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = parseInt(e.target.value);
+    if (isNaN(val)) {
+        setNumParticipantes(3);
+        return;
+    }
+    if (val > 8) val = 8;
+    setNumParticipantes(val);
   };
 
   if (submitted) {
@@ -52,6 +63,91 @@ export default function KpopForm({ accentColor }: KpopFormProps) {
     );
   }
 
+  const renderParticipantFields = (index: number, isLeader: boolean) => {
+    const title = isLeader ? "LÍDER DEL GRUPO" : `INTEGRANTE # ${index + 1}`;
+    return (
+      <div key={index} className="flex flex-col gap-5 mt-4 pt-6 border-t border-white/5">
+        <h4 className="font-display font-bold text-white text-lg flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accentColor }}></span>
+          {title}
+        </h4>
+        
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
+            Nombre Completo <span className="text-red-500">*</span></label>
+          <input
+            type="text"
+            required
+            className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
+              Tipo de documento <span className="text-red-500">*</span></label>
+            <select
+              required
+              className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body focus:outline-none focus:border-white/30 transition-colors appearance-none"
+            >
+              <option value="" className="text-black">Selecciona</option>
+              <option value="CC" className="text-black">Cédula de Ciudadanía</option>
+              <option value="TI" className="text-black">Tarjeta de Identidad</option>
+              <option value="CE" className="text-black">Cédula de Extranjería</option>
+              <option value="Pasaporte" className="text-black">Pasaporte</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
+              Número de documento <span className="text-red-500">*</span></label>
+            <input
+              type="text"
+              required
+              className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
+              Número de teléfono <span className="text-red-500">*</span></label>
+            <input
+              type="tel"
+              required
+              className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
+              Email <span className="text-red-500">*</span></label>
+            <input
+              type="email"
+              required
+              className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
+            Sube tu consentimiento informado
+          </label>
+          <span className="text-xs text-white/40 mb-1 font-body">Solo menores de edad</span>
+          <div className="relative">
+            <input
+              type="file"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            />
+            <div className="bg-white/5 border border-dashed border-white/20 rounded-xl px-4 py-4 text-center flex flex-col items-center justify-center gap-1.5 hover:bg-white/10 transition-colors relative z-0">
+              <Upload size={18} className="text-white/50" />
+              <span className="text-white/60 text-sm font-body font-semibold">Subir Archivo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <form
@@ -64,85 +160,49 @@ export default function KpopForm({ accentColor }: KpopFormProps) {
       }}
     >
       <div>
-        <h3 className="font-display text-xl font-black text-white mb-1">Inscripción Campeonato KPOP</h3>
-        <p className="text-white/40 text-sm font-body">Equipos de 2 a 8 integrantes.</p>
+        <h3 className="font-display text-2xl font-black text-white mb-2 uppercase">¡INSCRIBE A TU EQUIPO!</h3>
       </div>
 
       {/* Nombre del grupo */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          Nombre del grupo *
-        </label>
+          Nombre del grupo <span className="text-red-500">*</span></label>
         <input
           type="text"
           required
-          placeholder="Nombre de tu grupo"
           className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
         />
       </div>
 
-      {/* Número de integrantes */}
+      {/* Número de participantes */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          Número de integrantes *
-        </label>
+          # de participantes <span className="text-red-500">*</span></label>
+        <span className="text-xs text-white/40 mb-1 font-body">Min: 3, Max: 8</span>
         <input
           type="number"
           required
-          min={2}
+          min={3}
           max={8}
-          placeholder="2 – 8 personas"
+          value={numParticipantes || ""}
+          onChange={handleNumParticipantesChange}
           className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
         />
       </div>
 
-      {/* Nombre del representante */}
-      <div className="flex flex-col gap-1.5">
+      {/* Participantes dinámicos */}
+      {Array.from({ length: Math.max(3, Math.min(8, numParticipantes || 3)) }).map((_, index) => 
+        renderParticipantFields(index, index === 0)
+      )}
+
+      {/* Link de coreografía */}
+      <div className="flex flex-col gap-1.5 mt-6 pt-6 border-t border-white/5">
         <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          Nombre del representante *
-        </label>
+          Pega el link de tu coreografía <span className="text-red-500">*</span></label>
         <input
-          type="text"
+          type="url"
           required
-          placeholder="Quién representa al grupo"
-          className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      {/* Géneros / artistas */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          Canciones / artistas a presentar *
-        </label>
-        <input
-          type="text"
-          required
-          placeholder="Ej: BTS - Dynamite, BLACKPINK - Kill This Love"
-          className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      {/* Redes sociales */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          Instagram del grupo (opcional)
-        </label>
-        <input
-          type="text"
-          placeholder="@grupoinstagram"
-          className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      {/* WhatsApp */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-          WhatsApp de contacto *
-        </label>
-        <input
-          type="tel"
-          required
-          placeholder="3XX XXX XXXX"
+          placeholder="https://..."
           className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
         />
       </div>
@@ -151,7 +211,7 @@ export default function KpopForm({ accentColor }: KpopFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="mt-2 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-display font-black text-sm transition-all hover:opacity-90 disabled:opacity-50"
+        className="mt-6 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-display font-black text-[15px] transition-all hover:opacity-90 disabled:opacity-50"
         style={{
           backgroundColor: accentColor,
           color: "#0a0a0a",
@@ -160,9 +220,9 @@ export default function KpopForm({ accentColor }: KpopFormProps) {
         {loading ? (
           <span className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
         ) : (
-          <Send size={14} />
+          <Send size={16} />
         )}
-        {loading ? "Enviando..." : "Enviar inscripción"}
+        {loading ? "Enviando..." : "Enviar formulario"}
       </button>
     </form>
   );

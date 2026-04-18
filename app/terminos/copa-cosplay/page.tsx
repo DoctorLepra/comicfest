@@ -105,7 +105,8 @@ export default function CopaCosplayTerminosPage() {
           >
             <Link
               href="/actividades/copa-cosplay"
-              className="inline-flex items-center gap-2 text-cf-white/40 hover:text-cf-yellow text-sm font-display font-semibold transition-colors"
+              className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
+              style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
             >
               <ArrowLeft size={15} /> Volver a Copa Cosplay
             </Link>
