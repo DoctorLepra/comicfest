@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -177,7 +177,7 @@ export const StaggeredMenuPanel: React.FC<StaggeredMenuPanelProps> = ({
 
         openTlRef.current = tl;
         return tl;
-    }, [position]);
+    }, []);
 
     const playOpen = useCallback(() => {
         if (busyRef.current) return;
@@ -258,7 +258,7 @@ export const StaggeredMenuPanel: React.FC<StaggeredMenuPanelProps> = ({
     return (
         <div
             className="staggered-menu-wrapper fixed-wrapper"
-            style={accentColor ? ({ ["--sm-accent" as any]: accentColor } as React.CSSProperties) : undefined}
+            style={accentColor ? ({ "--sm-accent": accentColor } as React.CSSProperties) : undefined}
             data-position={position}
             data-open={open || undefined}
         >
@@ -266,7 +266,7 @@ export const StaggeredMenuPanel: React.FC<StaggeredMenuPanelProps> = ({
             <div ref={preLayersRef} className="sm-prelayers" aria-hidden="true">
                 {(() => {
                     const raw = colors && colors.length ? colors.slice(0, 4) : ["#1a1000", "#2a1f00"];
-                    let arr = [...raw];
+                    const arr = [...raw];
                     if (arr.length >= 3) {
                         const mid = Math.floor(arr.length / 2);
                         arr.splice(mid, 1);

@@ -137,7 +137,8 @@ export default function Stack({
             onMouseLeave={() => pauseOnHover && setIsPaused(false)}
         >
             {stack.map((card, index) => {
-                const randomRotate = randomRotation ? Math.random() * 10 - 5 : 0;
+                // Using a deterministic formula based on index to simulate randomness for the rotation
+                const randomRotate = randomRotation ? ((index * 7.53) % 10) - 5 : 0;
                 const baseRotate = randomRotation ? (stack.length - index - 1) * 4 : 0;
                 return (
                     <CardRotate
