@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { LogIn, ChevronDown, Instagram, Facebook, MessageCircle, X } from "lucide-react";
 import clsx from "clsx";
@@ -196,7 +197,7 @@ function MobileNavItem({
                 href={d.href}
                 onClick={onClose}
                 className={clsx(
-                  "px-9 py-3 text-sm font-body transition-colors",
+                  "px-9 py-3 text-sm font-display transition-colors",
                   pathname === d.href ? "text-cf-yellow" : "text-white/40 hover:text-white/70"
                 )}
               >
@@ -287,16 +288,14 @@ export default function Navbar() {
                 : { transition: "all 0.3s cubic-bezier(0.4,0,0.2,1)", maxWidth: "80rem", margin: "0 auto", padding: "0 1.5rem", height: "4rem" }
             }
           >
-            {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group shrink-0">
-              <div>
-                <span className="font-display text-xl md:text-2xl font-black text-cf-white tracking-tight group-hover:text-cf-yellow transition-colors duration-200">
-                  COMIC<span className="text-cf-yellow">FEST</span>
-                </span>
-                <span className="block text-[9px] text-cf-yellow/60 tracking-[0.3em] uppercase -mt-1 font-body">
-                  Colombia
-                </span>
-              </div>
+              <Image 
+                src="/images/pantalla-de-carga.png" 
+                alt="Comicfest Logo" 
+                width={120} 
+                height={30} 
+                className="object-contain hover:scale-[1.03] transition-transform duration-200"
+              />
             </Link>
 
             {/* Desktop nav */}
@@ -362,8 +361,14 @@ export default function Navbar() {
       >
         {/* Mobile header */}
         <div className="flex items-center justify-between px-6 h-16 border-b border-white/5">
-          <Link href="/" onClick={() => setMobileOpen(false)} className="font-display text-xl font-black">
-            COMIC<span className="text-cf-yellow">FEST</span>
+          <Link href="/" onClick={() => setMobileOpen(false)} className="shrink-0">
+            <Image 
+              src="/images/pantalla-de-carga.png" 
+              alt="Comicfest Logo" 
+              width={100} 
+              height={25} 
+              className="object-contain"
+            />
           </Link>
           <button
             onClick={() => setMobileOpen(false)}

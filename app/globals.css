@@ -14,7 +14,7 @@
 
   /* ── Typography ── */
   --font-display: "Space Grotesk", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
 }
 
 *,
@@ -23,7 +23,17 @@
   box-sizing: border-box;
 }
 
-body, h1, h2, h3, h4, h5, h6, p, ul, ol, figure {
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+figure {
   margin: 0;
 }
 
@@ -34,7 +44,7 @@ html {
 body {
   background-color: #0a0a0a;
   color: #fafafa;
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   overflow-x: hidden;
 }
 
@@ -156,9 +166,33 @@ h3.font-display {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* ── Spacing utilities for Cards ── */
+/* ── Spacing utilities ── */
 .card-action-spacing {
   margin-top: auto;
   padding-top: 2rem;
   width: 100%;
-}
+}
+
+.hero-countdown-spacing {
+  margin-bottom: 3rem;
+}
+
+.activity-header-spacing {
+  margin-bottom: 5rem;
+}
+
+.hero-description-spacing {
+  margin-top: 3rem;
+  text-align: center;
+  display: block;
+  width: 100%;
+}
+
+.activity-button-spacing {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.esports-card-spacing {
+  margin-bottom: 2rem;
+}

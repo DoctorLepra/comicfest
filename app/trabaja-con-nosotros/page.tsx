@@ -114,7 +114,7 @@ export default function TrabajaConNosotrosPage() {
     <div className="min-h-screen" style={{ paddingTop: "80px" }}>
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden" style={{ height: "340px" }}>
+      <section className="relative overflow-hidden" style={{ height: "580px" }}>
         <div className="absolute inset-0">
           <Squares
             direction="diagonal"
@@ -131,51 +131,57 @@ export default function TrabajaConNosotrosPage() {
               "linear-gradient(to bottom, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0) 40%, rgba(10,10,10,0.85) 100%)",
           }}
         />
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+        <div className="relative z-10 h-full flex flex-col items-center justify-start pt-32 text-center px-6">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }}>
             <p className="text-cf-yellow text-xs font-display font-semibold tracking-[0.4em] uppercase mb-4">
               Únete al equipo
             </p>
-            <h1 className="font-display text-5xl md:text-7xl font-black text-cf-white leading-none mb-5">
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-black italic tracking-tighter uppercase leading-none text-white drop-shadow-2xl">
               TRABAJA CON NOSOTROS
             </h1>
-            <div className="w-16 h-1 bg-cf-yellow mx-auto mb-5" />
-            <p className="text-cf-white/60 font-body text-lg md:text-xl max-w-2xl leading-relaxed">
-              Bienvenido/a al proceso para el cargo de logística en ComicFest – PEREIRA 2026. Aquí encontrarás todo lo que debes saber sobre tus funciones, horarios y condiciones de participación.
-            </p>
-            <div className="mt-8">
-              <a
-                href="#formulario"
-                className="inline-flex items-center gap-2 bg-cf-yellow text-cf-black font-display font-black px-8 py-4 rounded-xl hover:bg-cf-yellow-light transition-all duration-200 hover:scale-105 text-sm"
-              >
-                Regístrate
-                <Send size={16} />
-              </a>
+            
+            {/* ── Copa Cosplay Style Replacement ── */}
+            <div className="flex flex-col items-center mt-12 text-center">
+              <p className="text-white font-display font-bold text-lg max-w-xl mx-auto activity-header-spacing text-center">
+                Bienvenido/a al proceso para el cargo de logística en ComicFest – PEREIRA 2026. Aquí encontrarás todo lo que debes saber sobre tus funciones, horarios y condiciones de participación.
+              </p>
+              
+              <div className="activity-button-spacing">
+                <a
+                  href="#formulario"
+                  className="inline-flex items-center gap-2 bg-cf-yellow text-cf-black font-display font-black px-8 py-4 rounded-xl hover:bg-cf-yellow-light transition-all duration-200 hover:scale-105 text-sm uppercase tracking-wider"
+                >
+                  Regístrate Ahora
+                  <Send size={16} />
+                </a>
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* ── Back link ── */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-10">
-        <motion.div
+      <div className="px-6 md:px-12 pt-10 pb-2 flex flex-col items-center">
+        <div className="w-full max-w-4xl">
+          <motion.div
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
-        >
+          >
             <Link
-                href="/"
-                className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
-                style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
+              href="/"
+              className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
+              style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
             >
-                <ArrowLeft size={15} /> Volver al inicio
+              <ArrowLeft size={15} /> Volver al inicio
             </Link>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
 
       {/* ── Info cards ── */}
       <div className="px-6 md:px-12 pt-16 pb-8 flex flex-col items-center">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-4xl">
           {INFO.map((card, i) => (
             <motion.div
               key={card.title}
@@ -209,7 +215,7 @@ export default function TrabajaConNosotrosPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-5xl glass border border-cf-yellow/15 rounded-2xl px-8 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          className="w-full max-w-4xl glass border border-cf-yellow/15 rounded-2xl px-8 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         >
           <p className="text-cf-white/70 font-body text-sm leading-relaxed">
             Si necesitas más información o tienes alguna duda, escríbenos a nuestra{" "}
@@ -236,7 +242,7 @@ export default function TrabajaConNosotrosPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="w-full max-w-3xl"
+          className="w-full max-w-4xl"
         >
           {sent ? (
             <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}>

@@ -101,7 +101,7 @@ function FaqAnimatedItem({
               className="overflow-hidden"
             >
               <p
-                className="px-6 pb-5 text-white/55 font-body text-sm leading-relaxed border-t pt-4"
+                className="px-6 pb-5 text-white/55 font-display text-sm leading-relaxed border-t pt-4"
                 style={{ borderColor: `${color}20` }}
               >
                 {item.a}
@@ -206,7 +206,7 @@ export default function FaqSection() {
               <h2 className="font-display text-5xl md:text-6xl font-black text-white mb-2">
                 PREGUNTAS
               </h2>
-              <p className="text-white/40 text-xs font-body tracking-wider">
+              <p className="text-white/40 text-xs font-display tracking-wider">
                 Desplázate para ver las preguntas
               </p>
             </motion.div>

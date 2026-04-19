@@ -130,18 +130,18 @@ export default function BentoLanding() {
                                             <h3 className="font-display text-xl font-black text-cf-white mb-1">
                                                 {ticket.name}
                                             </h3>
-                                            <p className="text-cf-white/50 text-sm font-body mb-8">
+                                            <p className="text-cf-white/50 text-sm font-display mb-8">
                                                 {ticket.description}
                                             </p>
                                             <div className="mb-10">
                                                 <span className="font-display text-4xl font-black text-gradient">
                                                     {ticket.priceLabel}
                                                 </span>
-                                                <span className="text-cf-white/40 text-sm font-body ml-2">COP</span>
+                                                <span className="text-cf-white/40 text-sm font-display ml-2">COP</span>
                                             </div>
                                             <ul className="space-y-4">
                                                 {ticket.features.map((f) => (
-                                                    <li key={f} className="flex items-start gap-2.5 text-cf-white/60 text-sm font-body">
+                                                    <li key={f} className="flex items-start gap-2.5 text-cf-white/60 text-sm font-display">
                                                         <Check size={13} className="text-cf-yellow shrink-0 mt-0.5" />
                                                         {f}
                                                     </li>
@@ -221,13 +221,13 @@ export default function BentoLanding() {
                                                 </h2>
                                                 <p className="text-cf-white/40 text-sm text-center mb-6">{activity.subtitle}</p>
 
-                                                <p className="text-cf-white/60 font-body text-sm leading-relaxed mb-6">
+                                                <p className="text-cf-white/60 font-display text-sm leading-relaxed mb-6">
                                                     {activity.description}
                                                 </p>
 
                                                 <ul className="space-y-3 mb-8">
                                                     {activity.features.map((f) => (
-                                                        <li key={f} className="flex items-center gap-2 text-cf-white/50 text-sm font-body">
+                                                        <li key={f} className="flex items-center gap-2 text-cf-white/50 text-sm font-display">
                                                             <span
                                                                 className="w-1.5 h-1.5 rounded-full shrink-0"
                                                                 style={{ backgroundColor: activity.color }}

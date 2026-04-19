@@ -45,7 +45,7 @@ export default function CountdownTimer({ targetDate }: { targetDate: Date }) {
                 {String(value).padStart(2, "0")}
               </span>
             </div>
-            <span className="text-cf-white/40 text-[10px] md:text-xs font-body uppercase tracking-widest mt-3">
+            <span className="text-cf-white/40 text-[10px] md:text-xs font-display uppercase tracking-widest mt-3">
               {label}
             </span>
           </div>

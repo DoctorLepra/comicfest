@@ -70,17 +70,17 @@ export default function ActivitiesPreview() {
               <h3 className="font-display text-xl md:text-2xl font-black text-cf-white mb-1 group-hover:text-gradient transition-all duration-300">
                 {activity.title}
               </h3>
-              <p className="text-cf-white/40 text-sm font-body mb-4">{activity.subtitle}</p>
+              <p className="text-cf-white/40 text-sm font-display mb-4">{activity.subtitle}</p>
 
               {/* Description */}
-              <p className="text-cf-white/60 text-sm font-body leading-relaxed mb-6 line-clamp-2">
+              <p className="text-cf-white/60 text-sm font-display leading-relaxed mb-6 line-clamp-2">
                 {activity.description}
               </p>
 
               {/* Features */}
               <ul className="space-y-1.5 mb-6">
                 {activity.features.slice(0, 3).map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-cf-white/50 text-xs font-body">
+                  <li key={f} className="flex items-center gap-2 text-cf-white/50 text-xs font-display">
                     <span className="w-1 h-1 rounded-full bg-cf-yellow/60 shrink-0" />
                     {f}
                   </li>

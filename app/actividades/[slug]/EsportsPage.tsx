@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Trophy } from "lucide-react";
 import { BentoCard } from "@/components/ui/MagicBento";
 import TiltedCard from "@/components/ui/TiltedCard";
-import Particles from "@/components/ui/Particles";
+import PixelBlast from "@/components/ui/PixelBlast";
 import ElectricBorder from "@/components/ui/ElectricBorder";
 
 const TOURNAMENTS = [
@@ -47,7 +47,7 @@ const TOURNAMENTS = [
         title: "Free Fire",
         subtitle: "Battle Royale Clash",
         description: "Solo los mejores sobreviven. Torneo Battle Royale en escuadras de 4. Solo un equipo queda en pie.",
-        image: "/images/freefire.png",
+        image: "/images/free-fire.png",
         color: "#ff8c00",
         icon: "",
         spots: "20 escuadras",
@@ -81,18 +81,19 @@ export default function EsportsPage() {
     return (
         <div className="min-h-screen" style={{ paddingTop: "80px" }}>
 
-            {/* ── Hero con Particles ── */}
-            <section className="relative overflow-hidden" style={{ height: "340px" }}>
-                <Particles
-                    particleCount={180}
-                    particleSpread={8}
-                    speed={0.08}
-                    particleColors={["#00d4ff", "#f5c500", "#ffffff"]}
-                    alphaParticles={true}
-                    particleBaseSize={80}
-                    sizeRandomness={1.2}
-                    moveParticlesOnHover={true}
-                    particleHoverFactor={0.4}
+            {/* ── Hero con Pixel Blast ── */}
+            <section className="relative overflow-hidden" style={{ height: "420px" }}>
+                <PixelBlast
+                    variant="triangle"
+                    color="#f5c500"
+                    pixelSize={4}
+                    patternScale={2}
+                    patternDensity={1}
+                    pixelSizeJitter={0}
+                    speed={0.5}
+                    edgeFade={0.25}
+                    enableRipples={true}
+                    liquid={false}
                 />
                 <div
                     className="absolute inset-0 pointer-events-none"
@@ -100,31 +101,28 @@ export default function EsportsPage() {
                         background: "linear-gradient(to bottom, rgba(10,10,10,0.5) 0%, rgba(10,10,10,0) 40%, rgba(10,10,10,0.9) 100%)",
                     }}
                 />
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6">
+                {/* Centered header */}
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6 pt-16">
                     <motion.div
                         initial={{ opacity: 0, y: 24 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.65 }}
                     >
-                        <span
-                            className="inline-block px-3 py-1 rounded-full text-[11px] font-display font-bold uppercase tracking-widest mb-4"
-                            style={{ color: "#00d4ff", backgroundColor: "#00d4ff18", border: "1px solid #00d4ff30" }}
-                        >
-                            TORNEO
-                        </span>
-                        <h1 className="font-display text-5xl md:text-7xl font-black text-cf-white leading-none mb-3">
-                            TORNEOS ESPORTS
-                        </h1>
-                        <div className="w-16 h-1 bg-cf-yellow mx-auto mb-4" />
-                        <p className="text-cf-white/60 font-body text-base max-w-xl">
-                            Nexus Cup Comicfest · Demuestra tus habilidades en los mejores juegos del momento
+
+                        <div className="flex items-center justify-center gap-3 mb-3">
+                            <h1 className="font-display text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-none text-white drop-shadow-2xl">
+                                TORNEOS ESPORTS
+                            </h1>
+                        </div>
+                        <p className="text-white/60 font-display font-bold text-lg max-w-xl mx-auto mt-12">
+                            Demuestra tus habilidades en los mejores juegos del momento
                         </p>
                     </motion.div>
                 </div>
             </section>
 
             {/* ── Back link ── */}
-            <div className="max-w-7xl mx-auto px-6 md:px-12 pt-10 pb-2">
+            <div className="max-w-5xl mx-auto px-6 md:px-12 pt-10 pb-2">
                 <motion.div
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -141,7 +139,7 @@ export default function EsportsPage() {
             </div>
 
             {/* ── Tournament grid ── */}
-            <div className="px-6 md:px-12 pb-24 pt-8">
+            <div className="max-w-5xl mx-auto px-6 md:px-12 pb-24 pt-8">
                 <div className="flex items-center gap-3 mb-8">
                     <Trophy size={20} className="text-cf-yellow" />
                     <h2 className="font-display text-2xl font-black text-white">Juegos disponibles</h2>
@@ -158,21 +156,22 @@ export default function EsportsPage() {
                         >
                             <ElectricBorder color={t.color} speed={0.8} chaos={0.01} borderRadius={16} className="w-full">
                                 <BentoCard accentColor={t.color} delay={i * 0.07}>
-                                    <div className="flex flex-col h-full min-h-[420px]">
+                                    <div className="flex flex-col h-full min-h-[380px]">
 
                                         {/* ── TiltedCard game cover ── */}
-                                        <div className="relative" style={{ height: "220px" }}>
+                                        <div className="relative" style={{ height: "180px" }}>
                                             <TiltedCard
                                                 imageSrc={t.image}
                                                 altText={t.title}
                                                 captionText={t.title}
-                                                containerHeight="220px"
+                                                containerHeight="180px"
                                                 containerWidth="100%"
-                                                imageHeight="220px"
+                                                imageHeight="180px"
                                                 imageWidth="100%"
                                                 scaleOnHover={1.04}
                                                 rotateAmplitude={8}
                                                 showTooltip
+                                                objectFit={t.id === "free-fire" ? "contain" : "cover"}
                                             />
                                         </div>
 
@@ -193,7 +192,7 @@ export default function EsportsPage() {
                                             </h3>
                                             <p className="text-cf-white/40 text-xs text-center mb-3 font-display">{t.subtitle}</p>
 
-                                            <p className="text-cf-white/55 font-body text-sm leading-relaxed mb-5 flex-1">
+                                            <p className="text-cf-white/55 font-body text-sm leading-relaxed flex-1 esports-card-spacing">
                                                 {t.description}
                                             </p>
 

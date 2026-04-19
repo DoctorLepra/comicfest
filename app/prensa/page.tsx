@@ -23,7 +23,7 @@ export default function PrensaPage() {
   return (
     <div className="min-h-screen" style={{ paddingTop: "80px" }}>
       {/* ── Hero header con Squares background ── */}
-      <section className="relative overflow-hidden" style={{ height: "340px" }}>
+      <section className="relative overflow-hidden" style={{ height: "580px" }}>
         <div className="absolute inset-0">
           <Squares
             direction="diagonal"
@@ -40,7 +40,7 @@ export default function PrensaPage() {
               "linear-gradient(to bottom, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0) 40%, rgba(10,10,10,0.85) 100%)",
           }}
         />
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+        <div className="relative z-10 h-full flex flex-col items-center justify-start pt-32 text-center px-6">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -49,41 +49,47 @@ export default function PrensaPage() {
             <p className="text-cf-yellow text-xs font-display font-semibold tracking-[0.4em] uppercase mb-4">
               Medios y comunicación
             </p>
-            <h1 className="font-display text-6xl md:text-8xl font-black text-cf-white leading-none mb-5">
+            <h1 className="font-display text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-none text-white drop-shadow-2xl">
               PRENSA
             </h1>
-            <div className="w-16 h-1 bg-cf-yellow mx-auto mb-5" />
-            <p className="text-cf-white/60 font-body text-base md:text-lg max-w-xl leading-relaxed">
-              Si tienes un medio de comunicación o eres creador de contenido, puedes ayudarnos a que cada vez seamos más los que hacemos parte del universo Comicfest.
-            </p>
-            <div className="mt-8">
-              <a
-                href="#formulario"
-                className="inline-flex items-center gap-2 bg-cf-yellow text-cf-black font-display font-black px-8 py-4 rounded-xl hover:bg-cf-yellow-light transition-all duration-200 hover:scale-105 text-sm"
-              >
-                Regístrate
-                <Send size={16} />
-              </a>
+
+            {/* ── Copa Cosplay Style Replacement ── */}
+            <div className="flex flex-col items-center mt-12 text-center">
+              <p className="text-white font-display font-bold text-lg max-w-xl mx-auto activity-header-spacing text-center">
+                Si tienes un medio de comunicación o eres creador de contenido, puedes ayudarnos a que cada vez seamos más los que hacemos parte del universo Comicfest.
+              </p>
+              
+              <div className="activity-button-spacing">
+                <a
+                  href="#formulario"
+                  className="inline-flex items-center gap-2 bg-cf-yellow text-cf-black font-display font-black px-8 py-4 rounded-xl hover:bg-cf-yellow-light transition-all duration-200 hover:scale-105 text-sm uppercase tracking-wider"
+                >
+                  Regístrate Ahora
+                  <Send size={16} />
+                </a>
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* ── Back link ── */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-10">
-        <motion.div
+      <div className="px-6 md:px-12 pt-10 pb-2 flex flex-col items-center">
+        <div className="w-full max-w-4xl">
+          <motion.div
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
-        >
+          >
             <Link
-                href="/"
-                className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
-                style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
+              href="/"
+              className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
+              style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
             >
-                <ArrowLeft size={15} /> Volver al inicio
+              <ArrowLeft size={15} /> Volver al inicio
             </Link>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
 
       {/* ── Formulario de registro ── */}
@@ -93,7 +99,7 @@ export default function PrensaPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="w-full max-w-3xl"
+          className="w-full max-w-4xl"
         >
           {sent ? (
             <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}>
@@ -122,8 +128,8 @@ export default function PrensaPage() {
               </div>
             </div>
           ) : (
-            <form 
-              onSubmit={handleSubmit} 
+            <form
+              onSubmit={handleSubmit}
               className="rounded-2xl p-7 md:p-10 flex flex-col gap-6"
               style={{
                 background: "rgba(20,20,20,0.97)",
@@ -141,21 +147,21 @@ export default function PrensaPage() {
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                     Nombre Completo <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" 
-                    required 
+                  <input
+                    type="text"
+                    required
                     placeholder="Tu nombre completo"
-                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors" 
+                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                     Número de documento <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" 
-                    required 
+                  <input
+                    type="text"
+                    required
                     placeholder="Tu número"
-                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors" 
+                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                   />
                 </div>
               </div>
@@ -164,11 +170,11 @@ export default function PrensaPage() {
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                   Número de contacto <span className="text-red-500">*</span></label>
-                <input 
-                  type="tel" 
-                  required 
+                <input
+                  type="tel"
+                  required
                   placeholder="3XX XXX XXXX"
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors" 
+                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                 />
               </div>
 
@@ -177,21 +183,21 @@ export default function PrensaPage() {
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                     Perfil de Instagram <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" 
-                    required 
-                    placeholder="@tuinstagram" 
-                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors" 
+                  <input
+                    type="text"
+                    required
+                    placeholder="@tuinstagram"
+                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                     Ciudad de residencia <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" 
-                    required 
+                  <input
+                    type="text"
+                    required
                     placeholder="Ej. Bogotá"
-                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors" 
+                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                   />
                 </div>
               </div>
@@ -200,11 +206,11 @@ export default function PrensaPage() {
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                   Email <span className="text-red-500">*</span></label>
-                <input 
-                  type="email" 
-                  required 
+                <input
+                  type="email"
+                  required
                   placeholder="tu@email.com"
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors" 
+                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                 />
               </div>
 

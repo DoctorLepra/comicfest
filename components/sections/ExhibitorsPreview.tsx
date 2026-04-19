@@ -47,7 +47,7 @@ export default function ExhibitorsPreview() {
               LLEVA TU MARCA<br />
               <span className="text-gradient">AL SIGUIENTE NIVEL</span>
             </h2>
-            <p className="text-cf-white/60 font-body text-base leading-relaxed mb-8">
+            <p className="text-cf-white/60 font-display text-base leading-relaxed mb-8">
               ¿Tienes una marca relacionada a la cultura pop? En Comicfest
               tendrás acceso a más de 15.000 usuarios potenciales por edición.
               Regístrate en nuestra plataforma y reserva tu stand de forma fácil
@@ -69,7 +69,7 @@ export default function ExhibitorsPreview() {
                   </div>
                   <div>
                     <p className="font-display font-bold text-cf-white text-sm">{p.title}</p>
-                    <p className="text-cf-white/50 text-xs font-body">{p.description}</p>
+                    <p className="text-cf-white/50 text-xs font-display">{p.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -125,21 +125,21 @@ export default function ExhibitorsPreview() {
 
               {/* Legend */}
               <div className="flex gap-4 flex-wrap mt-4">
-                <div className="flex items-center gap-1.5 text-xs font-body text-cf-white/50">
+                <div className="flex items-center gap-1.5 text-xs font-display text-cf-white/50">
                   <div className="w-3 h-3 rounded bg-cf-yellow/8 border border-cf-yellow/20" />
                   Disponible
                 </div>
-                <div className="flex items-center gap-1.5 text-xs font-body text-cf-white/50">
+                <div className="flex items-center gap-1.5 text-xs font-display text-cf-white/50">
                   <div className="w-3 h-3 rounded bg-cf-yellow/20 border border-cf-yellow/50" />
                   Premium
                 </div>
-                <div className="flex items-center gap-1.5 text-xs font-body text-cf-white/50">
+                <div className="flex items-center gap-1.5 text-xs font-display text-cf-white/50">
                   <div className="w-3 h-3 rounded bg-cf-white/5 border border-cf-white/10" />
                   Reservado
                 </div>
               </div>
 
-              <p className="text-cf-white/30 text-xs font-body mt-4 text-center">
+              <p className="text-cf-white/30 text-xs font-display mt-4 text-center">
                 Visualización previa — Accede para ver el mapa completo
               </p>
 

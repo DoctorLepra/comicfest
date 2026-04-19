@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, ArrowLeft, Map } from "lucide-react";
+import { ArrowRight, ArrowLeft, Map, UserPlus, ArrowDown } from "lucide-react";
 import Image from "next/image";
 import { EVENT } from "@/lib/constants";
 import Squares from "@/components/ui/Squares";
+import RegistroModal from "./RegistroModal";
 
 const METRICS = [
   {
@@ -32,14 +33,19 @@ const METRICS = [
 ];
 
 export default function ExpositoresPage() {
-  const ref = useRef(null);
+  const [isRegistroOpen, setIsRegistroOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
+
+  const scrollToMetrics = () => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="min-h-screen" style={{ paddingTop: "120px" }}>
 
       {/* ── Hero header con Squares background ── */}
-      <section className="relative overflow-hidden" style={{ height: "340px" }}>
+      <section className="relative overflow-hidden" style={{ height: "580px" }}>
         <div className="absolute inset-0">
           <Squares
             direction="diagonal"
@@ -57,7 +63,7 @@ export default function ExpositoresPage() {
               "linear-gradient(to bottom, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0) 40%, rgba(10,10,10,0.85) 100%)",
           }}
         />
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+        <div className="relative z-10 h-full flex flex-col items-center justify-start pt-32 text-center px-6">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -66,59 +72,81 @@ export default function ExpositoresPage() {
             <p className="text-cf-yellow text-xs font-display font-semibold tracking-[0.4em] uppercase mb-6">
               Para marcas y emprendedores
             </p>
-            <h1 className="font-display text-6xl md:text-8xl font-black text-cf-white leading-none mb-8">
+            <h1 className="font-display text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-none text-white drop-shadow-2xl">
               EXPOSITORES
             </h1>
-            <div className="w-16 h-1 bg-cf-yellow mx-auto mb-8" />
-            <p className="text-cf-white/60 font-body text-base md:text-lg max-w-xl leading-relaxed">
-              ¿Tienes una marca relacionada a la cultura pop? Comicfest es tu plataforma ideal para conectar con tu audiencia.
-            </p>
+
+            {/* ── Copa Cosplay Style Replacement ── */}
+            <div className="flex flex-col items-center mt-12 text-center">
+              <p className="text-white font-display font-bold text-lg max-w-xl mx-auto activity-header-spacing text-center">
+                ¿Tienes una marca relacionada a la cultura pop? Comicfest es tu plataforma ideal para conectar con tu audiencia.
+              </p>
+              
+              <div className="activity-button-spacing flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                  onClick={() => setIsRegistroOpen(true)}
+                  className="flex items-center gap-2 bg-cf-yellow text-cf-black font-display font-black px-8 py-4 rounded-xl hover:bg-cf-yellow-light transition-all duration-200 hover:scale-105 text-sm"
+                >
+                  <UserPlus size={18} />
+                  REGISTRARSE
+                </button>
+                <button
+                  onClick={scrollToMetrics}
+                  className="flex items-center gap-2 border border-cf-yellow/30 text-cf-yellow font-display font-bold px-8 py-4 rounded-xl hover:border-cf-yellow/60 transition-all duration-200 text-sm"
+                >
+                  <ArrowDown size={18} />
+                  VER MÁS
+                </button>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* ── Back link ── */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-10">
-        <motion.div
+      <div className="px-6 md:px-12 pt-10 pb-2 flex flex-col items-center">
+        <div className="w-full max-w-4xl">
+          <motion.div
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
-        >
+          >
             <Link
-                href="/"
-                className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
-                style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
+              href="/"
+              className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
+              style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
             >
-                <ArrowLeft size={15} /> Volver al inicio
+              <ArrowLeft size={15} /> Volver al inicio
             </Link>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
 
       {/* ── Metrics grid ── */}
-      <div ref={ref} className="px-6 md:px-12 pt-28 pb-16 flex flex-col items-center overflow-hidden">
+      <div id="metricas" ref={ref} className="px-6 md:px-12 pt-28 pb-16 flex flex-col items-center overflow-hidden">
         
         {/* Title: NUESTRAS METRICAS with side lines */}
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.6 }}
-            className="flex items-center justify-center w-full max-w-6xl mb-16 gap-6"
+            className="flex items-center justify-center w-full max-w-4xl mb-16 gap-6"
         >
           <div className="h-[2px] bg-white/20 flex-1"></div>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black text-cf-yellow tracking-tight uppercase whitespace-nowrap">
+          <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-black text-cf-yellow tracking-tight uppercase whitespace-nowrap">
             NUESTRAS METRICAS
           </h2>
           <div className="h-[2px] bg-white/20 flex-1"></div>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full max-w-7xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full max-w-4xl">
           {METRICS.map((m, i) => (
             <motion.div
               key={m.title}
               initial={{ opacity: 0, y: 50 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: i * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="relative h-[440px] md:h-[500px] w-full rounded-[32px] overflow-hidden group border border-white/10 mx-auto max-w-[340px] sm:max-w-none"
+              className="relative h-[280px] md:h-[340px] w-full rounded-2xl overflow-hidden group border border-white/10 mx-auto max-w-[340px] sm:max-w-none"
               style={{ boxShadow: "0 10px 40px rgba(0,0,0,0.5)" }}
             >
               {/* Background Image */}
@@ -139,14 +167,14 @@ export default function ExpositoresPage() {
               />
               
               {/* Content positioned at bottom */}
-              <div className="absolute inset-0 p-8 flex flex-col justify-end text-center z-10 transition-transform duration-500 group-hover:-translate-y-3">
+              <div className="absolute inset-0 p-6 flex flex-col justify-end text-center z-10 transition-transform duration-500 group-hover:-translate-y-3">
                   <h3 
-                    className="font-display text-[54px] leading-[1.1] font-black mb-3 drop-shadow-2xl"
+                    className="font-display text-4xl leading-[1.1] font-black mb-3 drop-shadow-2xl"
                     style={{ color: "#f5c500" }}
                   >
                     {m.title}
                   </h3>
-                  <p className="font-display font-black text-cf-white text-lg md:text-xl leading-tight drop-shadow-xl w-[90%] mx-auto">
+                  <p className="font-display font-black text-cf-white text-sm md:text-base leading-tight drop-shadow-xl w-[90%] mx-auto">
                     {m.desc}
                   </p>
               </div>
@@ -161,15 +189,15 @@ export default function ExpositoresPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="glass border border-cf-yellow/20 rounded-2xl p-12 md:p-20 w-full max-w-5xl mb-12 flex flex-col items-center"
+          className="glass border border-cf-yellow/20 rounded-2xl p-8 md:p-14 w-full max-w-4xl mb-12 flex flex-col items-center"
         >
           <h2 className="font-display text-3xl md:text-4xl font-black text-cf-white mb-8 text-center">
             ¿LISTO PARA RESERVAR TU STAND?
           </h2>
-          <p className="text-cf-white/60 font-body text-base max-w-xl mb-12 text-center">
+          <p className="text-cf-white/60 font-body text-base max-w-xl mb-4 text-center">
             Accede a nuestra plataforma de expositores para seleccionar tu stand de forma visual e interactiva en el mapa del evento.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <div className="card-action-spacing flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link
               href="/login"
               className="flex items-center gap-2 bg-cf-yellow text-cf-black font-display font-black px-10 py-5 rounded-xl hover:bg-cf-yellow-light transition-all duration-200 hover:scale-105 text-sm"
@@ -193,6 +221,8 @@ export default function ExpositoresPage() {
           Horario de atención comercial: Lunes a Viernes 9:00 am – 12:30 pm y 1:30 pm – 5:30 pm · WhatsApp: {EVENT.whatsapp}
         </p>
       </div>
+
+      <RegistroModal isOpen={isRegistroOpen} onClose={() => setIsRegistroOpen(false)} />
     </div>
   );
 }

@@ -28,11 +28,15 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
         );
     }
 
+    // Si es KPOP, usamos el amarillo de la marca para las tarjetas y formularios
+    const accentColor = slug === "kpop" ? "#f5c500" : activity.color;
+
+
     return (
         <div className="min-h-screen" style={{ paddingTop: "80px" }}>
 
             {/* ── Hero con Particles background ── */}
-            <section className="relative overflow-hidden" style={{ height: "340px" }}>
+            <section className="relative overflow-hidden" style={{ height: "420px" }}>
                 {/* Particles canvas */}
                 <Particles
                     particleCount={180}
@@ -55,39 +59,29 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
                 />
 
                 {/* Centered header */}
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6">
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6 pt-16">
                     <motion.div
                         initial={{ opacity: 0, y: 24 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.65 }}
                     >
-                        <span
-                            className="inline-block px-3 py-1 rounded-full text-[10px] font-display font-bold uppercase tracking-widest mb-4"
-                            style={{
-                                color: activity.color,
-                                backgroundColor: `${activity.color}20`,
-                                border: `1px solid ${activity.color}40`,
-                            }}
-                        >
-                            {activity.badge}
-                        </span>
+
                         <div className="flex items-center justify-center gap-3 mb-3">
                             <span className="text-5xl">{activity.icon}</span>
-                            <h1 className="font-display text-5xl md:text-7xl font-black text-white leading-none">
-                                {activity.title.toUpperCase()}
+                            <h1 className="font-display text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-none text-white drop-shadow-2xl">
+                                {activity.title}
                             </h1>
                         </div>
-                        <div className="w-16 h-1 mx-auto mb-4" style={{ backgroundColor: activity.color }} />
                         {slug === "copa-cosplay" || slug === "kpop" ? (
-                            <div className="flex flex-col items-center">
-                                <p className="text-white font-display font-bold text-lg max-w-xl mx-auto mb-6">
+                            <div className="flex flex-col items-center mt-12">
+                                <p className="text-white font-display font-bold text-lg max-w-xl mx-auto activity-header-spacing">
                                     ¡Porfavor lee los terminos y condiciones {slug === "kpop" ? "del campeonato" : "de la copa"} antes de llenar el formulario!
                                 </p>
-                                <div className="flex items-center justify-center gap-4">
+                                <div className="flex items-center justify-center gap-4 activity-button-spacing">
                                     <Link
                                         href={slug === "kpop" ? "/terminos/campeonato-kpop" : "/terminos/copa-cosplay"}
                                         className="px-8 py-3.5 rounded-[2rem] font-display font-bold text-[15px] transition-all hover:scale-105"
-                                        style={{ backgroundColor: "#1e1e1e", color: activity.color }}
+                                        style={{ backgroundColor: "#1e1e1e", color: accentColor }}
                                     >
                                         Leer TyC
                                     </Link>
@@ -96,7 +90,7 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
                                             document.getElementById('form-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                         }}
                                         className="px-8 py-3.5 rounded-[2rem] font-display font-bold text-[15px] flex items-center gap-2 transition-all hover:scale-105"
-                                        style={{ backgroundColor: "#1e1e1e", color: activity.color }}
+                                        style={{ backgroundColor: "#1e1e1e", color: accentColor }}
                                     >
                                         Inscribete <ArrowLeft size={16} className="-rotate-90" />
                                     </button>
@@ -130,36 +124,37 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
 
                 {/* ── Body: description + features + form ── */}
                 {slug === "copa-cosplay" || slug === "kpop" ? (
-                    <div className="max-w-3xl mx-auto pb-20 flex flex-col gap-10">
-                        {/* Top: Description in glassy panel */}
+                    <div className="max-w-5xl mx-auto pb-20 flex flex-col gap-10">
+                        {/* Top: Description & Details in 2-column grid */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            className="rounded-2xl p-7 flex flex-col items-center text-center w-full"
-                            style={{
-                                background: "rgba(20,20,20,0.97)",
-                                border: `1px solid ${activity.color}30`,
-                                boxShadow: `0 0 32px ${activity.color}12`,
-                            }}
+                            className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full mb-10"
                         >
-                            <h2 className="font-display text-xl font-black text-white mb-3">Descripción</h2>
-                            <p className="text-white/60 font-body text-sm leading-relaxed mb-8 max-w-2xl">
-                                {activity.description}
-                            </p>
+                            {/* Column 1: Descripción */}
+                            <div className="flex flex-col items-start text-left">
+                                <h2 className="font-display text-2xl font-black text-white mb-6 uppercase tracking-tight">Descripción</h2>
+                                <p className="text-white/60 font-display text-lg md:text-xl leading-relaxed">
+                                    {activity.description}
+                                </p>
+                            </div>
 
-                            <h2 className="font-display text-xl font-black text-white mb-3">Detalles</h2>
-                            <ul className="space-y-2 text-left inline-block mb-4">
-                                {activity.features.map((f) => (
-                                    <li key={f} className="flex items-center gap-2 text-white/55 text-sm font-body">
-                                        <span
-                                            className="w-1.5 h-1.5 rounded-full shrink-0"
-                                            style={{ backgroundColor: activity.color }}
-                                        />
-                                        {f}
-                                    </li>
-                                ))}
-                            </ul>
+                            {/* Column 2: Detalles */}
+                            <div className="flex flex-col items-start text-left">
+                                <h2 className="font-display text-2xl font-black text-white mb-6 uppercase tracking-tight">Detalles</h2>
+                                <ul className="space-y-4">
+                                    {activity.features.map((f) => (
+                                        <li key={f} className="flex items-center gap-3 text-white/55 text-base font-body">
+                                            <span
+                                                className="w-2 h-2 rounded-full shrink-0"
+                                                style={{ backgroundColor: accentColor }}
+                                            />
+                                            {f}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </motion.div>
 
                         {/* Bottom: Form */}
@@ -170,8 +165,8 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
                             transition={{ duration: 0.6, delay: 0.3 }}
                             className="w-full scroll-mt-28"
                         >
-                            {slug === "copa-cosplay" && <CosplayForm accentColor={activity.color} />}
-                            {slug === "kpop" && <KpopForm accentColor={activity.color} />}
+                            {slug === "copa-cosplay" && <CosplayForm accentColor={accentColor} />}
+                            {slug === "kpop" && <KpopForm accentColor={accentColor} />}
                         </motion.div>
                     </div>
                 ) : (
@@ -195,7 +190,7 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
                                     <li key={f} className="flex items-center gap-2 text-white/55 text-sm font-body">
                                         <span
                                             className="w-1.5 h-1.5 rounded-full shrink-0"
-                                            style={{ backgroundColor: activity.color }}
+                                            style={{ backgroundColor: accentColor }}
                                         />
                                         {f}
                                     </li>
@@ -221,10 +216,10 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
                             transition={{ duration: 0.6, delay: 0.3 }}
                             className="md:col-span-3"
                         >
-                            {slug === "copa-cosplay" && <CosplayForm accentColor={activity.color} />}
-                            {slug === "kpop" && <KpopForm accentColor={activity.color} />}
+                            {slug === "copa-cosplay" && <CosplayForm accentColor={accentColor} />}
+                            {slug === "kpop" && <KpopForm accentColor={accentColor} />}
                             {slug !== "copa-cosplay" && slug !== "kpop" && (
-                                <GenericForm activity={activity} accentColor={activity.color} />
+                                <GenericForm activity={activity} accentColor={accentColor} />
                             )}
                         </motion.div>
 

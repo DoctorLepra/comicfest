@@ -19,6 +19,7 @@ interface TiltedCardProps {
     showTooltip?: boolean;
     overlayContent?: React.ReactNode;
     displayOverlayContent?: boolean;
+    objectFit?: React.CSSProperties["objectFit"];
 }
 
 const springValues: SpringOptions = {
@@ -41,6 +42,7 @@ export default function TiltedCard({
     showTooltip = true,
     overlayContent = null,
     displayOverlayContent = false,
+    objectFit = "cover",
 }: TiltedCardProps) {
     const ref = useRef<HTMLElement>(null);
 
@@ -122,6 +124,7 @@ export default function TiltedCard({
                     style={{
                         width: "100%",
                         height: "100%",
+                        objectFit,
                     }}
                 />
 

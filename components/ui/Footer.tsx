@@ -8,9 +8,8 @@ export default function Footer() {
 
       {/* ── Contenido principal ── */}
       <div className="flex flex-col px-6 md:px-12 py-20 gap-16">
-
-        {/* Top: Brand + Nav + Evento */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        {/* Top: Brand + Nav + Legal + Evento */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
 
           {/* Brand */}
           <div className="lg:col-span-2 flex flex-col items-start gap-5">
@@ -18,11 +17,11 @@ export default function Footer() {
               <h2 className="font-display text-3xl font-black text-cf-white">
                 COMIC<span className="text-cf-yellow">FEST</span>
               </h2>
-              <p className="text-cf-yellow/50 text-[10px] tracking-[0.35em] uppercase font-body mt-0.5">
+              <p className="text-cf-yellow/50 text-[10px] tracking-[0.35em] uppercase font-display mt-0.5">
                 Colombia
               </p>
             </div>
-            <p className="text-cf-white/45 font-body text-sm leading-relaxed max-w-sm">
+            <p className="text-cf-white/45 font-display text-sm leading-relaxed max-w-sm uppercase">
               Una de las convenciones más grandes de Colombia. Más de 250.000 personas
               fanáticas de los superhéroes, cómics, videojuegos y la cultura pop.
             </p>
@@ -75,7 +74,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-cf-white/45 hover:text-cf-yellow text-sm font-body transition-colors duration-200 hover:translate-x-1 inline-block"
+                    className="text-cf-white/45 hover:text-cf-yellow text-sm font-display transition-colors duration-200 hover:translate-x-1 inline-block uppercase"
                   >
                     {label}
                   </Link>
@@ -84,38 +83,62 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Términos y Condiciones */}
+          <div className="flex flex-col gap-4">
+            <h3 className="font-display font-bold text-cf-white text-xs uppercase tracking-widest">
+              Términos y Condiciones
+            </h3>
+            <ul className="flex flex-col gap-3 font-display">
+              <li>
+                <Link
+                  href="/terminos/copa-cosplay"
+                  className="text-cf-white/45 hover:text-cf-yellow text-sm transition-colors duration-200 hover:translate-x-1 inline-block uppercase"
+                >
+                  Copa Cosplay
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terminos/campeonato-kpop"
+                  className="text-cf-white/45 hover:text-cf-yellow text-sm transition-colors duration-200 hover:translate-x-1 inline-block uppercase"
+                >
+                  Campeonato KPOP
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           {/* Evento */}
           <div className="flex flex-col gap-4">
             <h3 className="font-display font-bold text-cf-white text-xs uppercase tracking-widest">
               Próximo Evento
             </h3>
-            <div className="flex flex-col gap-4 text-sm font-body">
+            <div className="flex flex-col gap-4 text-sm font-display">
               <div className="flex gap-3 items-start group">
                 <MapPin size={15} className="text-cf-yellow shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-cf-white/70 font-medium group-hover:text-cf-white transition-colors">{EVENT.venue}</p>
-                  <p className="text-cf-white/35 text-xs mt-0.5">{EVENT.address}</p>
+                  <p className="text-cf-white/70 font-medium group-hover:text-cf-white transition-colors uppercase">{EVENT.venue}</p>
+                  <p className="text-cf-white/35 text-xs mt-0.5 uppercase">{EVENT.address}</p>
                 </div>
               </div>
               <div className="flex gap-3 items-start group">
                 <Clock size={15} className="text-cf-yellow shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-cf-white/70 font-medium group-hover:text-cf-white transition-colors">{EVENT.dates} · {EVENT.year}</p>
-                  <p className="text-cf-white/35 text-xs mt-0.5">{EVENT.openingTime} – {EVENT.lastEntry}</p>
+                  <p className="text-cf-white/70 font-medium group-hover:text-cf-white transition-colors uppercase">{EVENT.dates} · {EVENT.year}</p>
+                  <p className="text-cf-white/35 text-xs mt-0.5 uppercase">{EVENT.openingTime} – {EVENT.lastEntry}</p>
                 </div>
               </div>
               <div className="flex gap-3 items-start group">
                 <Mail size={15} className="text-cf-yellow shrink-0 mt-0.5" />
                 <a
                   href={`https://wa.me/57${EVENT.whatsapp}`}
-                  className="text-cf-white/45 hover:text-cf-yellow transition-colors text-sm"
+                  className="text-cf-white/45 hover:text-cf-yellow transition-colors text-sm uppercase"
                 >
                   WhatsApp: {EVENT.whatsapp}
                 </a>
               </div>
             </div>
           </div>
-
         </div>
 
         {/* Separador */}
@@ -123,10 +146,10 @@ export default function Footer() {
 
         {/* Bottom: copyright + legal */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-cf-white/25 text-xs font-body">
+          <p className="text-cf-white/25 text-xs font-display">
             © 2026 Comicfest Colombia. Todos los derechos reservados.
           </p>
-          <div className="flex gap-6 text-xs font-body">
+          <div className="flex gap-6 text-xs font-display">
             <Link
               href="/terminos"
               className="text-cf-white/25 hover:text-cf-yellow/60 transition-colors duration-200"
