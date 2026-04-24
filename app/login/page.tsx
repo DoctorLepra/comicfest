@@ -50,13 +50,8 @@ export default function LoginPage() {
           boxShadow: "0 0 60px rgba(245,197,0,0.08), 0 24px 48px rgba(0,0,0,0.5)",
         }}
       >
-        {/* Back link */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-white/35 hover:text-cf-yellow text-xs font-display font-semibold transition-colors mb-8"
-        >
-          <ArrowLeft size={13} /> Volver al inicio
-        </Link>
+        {/* Back link hidden for layout preservation */}
+        <div className="h-5 mb-8 w-full" />
 
         {/* Header */}
         <div className="mb-12 text-center">

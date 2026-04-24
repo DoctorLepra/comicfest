@@ -65,35 +65,34 @@ const CIUDADES = ["Bogotá", "Manizales", "Pereira", "Armenia", "Cali", "Neiva",
 const SANGRE = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 const EPS_LIST = [
   "Aliansalud EPS",
+  "Anas Wayuu EPSI",
   "Asmet Salud",
+  "Asociación Indígena del Cauca (AIC)",
+  "Cajacopi EPS",
+  "Capital Salud EPS",
   "Capresoca EPS",
-  "Comfachocó EPS",
-  "Comfaoriente",
+  "Comfenalco Valle",
   "Compensar EPS",
   "Coosalud EPS",
-  "Cruz Blanca EPS",
+  "Dusakawi EPSI",
+  "Ecoopsos EPS",
+  "Emssanar EPS",
+  "EPS Familiar de Colombia",
   "EPS Sanitas",
   "EPS Sura",
-  "Famisanar",
-  "Ferrocarriles (FFS)",
-  "Magisterio (FIDUPREVISORA)",
-  "Medimás EPS",
+  "Famisanar EPS",
+  "Fuerzas Militares / Policía Nacional",
+  "Magisterio (Fiduprevisora)",
+  "Mallamas EPSI",
+  "Mutual Ser EPS",
   "Nueva EPS",
   "Pijaos Salud EPSI",
-  "Salud Bolívar EPS",
-  "Salud MIA EPSI",
   "Salud Total EPS",
+  "Salud Mia EPS",
   "Savia Salud EPS",
   "SOS EPS",
-  "Mutual SER EPSI",
-  "Dusakawi EPSI",
-  "AIC EPSI",
-  "Mallamas EPSI",
-  "ECOOPSOS ESS EPS-S",
-  "Emssanar EPS",
-  "Anas Wayuu EPSI",
   "No tengo / Vinculado",
-  "Otra",
+  "Otra"
 ];
 
 export default function TrabajaConNosotrosPage() {
@@ -163,19 +162,7 @@ export default function TrabajaConNosotrosPage() {
       {/* ── Back link ── */}
       <div className="px-6 md:px-12 pt-10 pb-2 flex flex-col items-center">
         <div className="w-full max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
-              style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
-            >
-              <ArrowLeft size={15} /> Volver al inicio
-            </Link>
-          </motion.div>
+          <div className="h-[46px] w-full" />
         </div>
       </div>
 
@@ -280,7 +267,7 @@ export default function TrabajaConNosotrosPage() {
                 boxShadow: `0 0 32px ${accentColor}12`,
               }}
             >
-              <div>
+              <div className="flex flex-col items-center text-center">
                 <h3 className="font-display text-2xl font-black text-white mb-1">¡REGÍSTRATE!</h3>
                 <p className="text-white/40 text-sm font-body">Completa tus datos para postularte al equipo de logística.</p>
               </div>

@@ -159,7 +159,7 @@ export default function KpopForm({ accentColor }: KpopFormProps) {
         boxShadow: `0 0 32px ${accentColor}12`,
       }}
     >
-      <div>
+      <div className="flex flex-col items-center text-center">
         <h3 className="font-display text-2xl font-black text-white mb-2 uppercase">¡INSCRIBE A TU EQUIPO!</h3>
       </div>
 

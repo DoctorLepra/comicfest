@@ -53,7 +53,7 @@ export default function GenericForm({ activity, accentColor }: GenericFormProps)
         boxShadow: `0 0 32px ${accentColor}12`,
       }}
     >
-      <div>
+      <div className="flex flex-col items-center text-center">
         <h3 className="font-display text-xl font-black text-white mb-1">
           Quiero participar
         </h3>

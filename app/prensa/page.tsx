@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Squares from "@/components/ui/Squares";
 import Link from "next/link";
-import { Send, CheckCircle, ArrowLeft } from "lucide-react";
+import { Send, CheckCircle, ArrowLeft, ChevronDown } from "lucide-react";
 
 export default function PrensaPage() {
   const [loading, setLoading] = useState(false);
@@ -76,19 +76,7 @@ export default function PrensaPage() {
       {/* ── Back link ── */}
       <div className="px-6 md:px-12 pt-10 pb-2 flex flex-col items-center">
         <div className="w-full max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
-              style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
-            >
-              <ArrowLeft size={15} /> Volver al inicio
-            </Link>
-          </motion.div>
+          <div className="h-[46px] w-full" />
         </div>
       </div>
 
@@ -137,7 +125,7 @@ export default function PrensaPage() {
                 boxShadow: `0 0 32px ${accentColor}12`,
               }}
             >
-              <div>
+              <div className="flex flex-col items-center text-center">
                 <h3 className="font-display text-2xl font-black text-white mb-1">¡REGÍSTRATE!</h3>
                 <p className="text-white/40 text-sm font-body">Completa tus datos para solicitar acreditación de prensa.</p>
               </div>
@@ -215,25 +203,27 @@ export default function PrensaPage() {
               </div>
 
               {/* Fila 5: Eres... */}
-              <div className="flex flex-col gap-1.5">
+              <div className="relative flex flex-col gap-1.5">
                 <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
-                  Eres... *
+                  Eres... <span className="text-red-500">*</span>
                 </label>
                 <select
                   required
                   defaultValue=""
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body focus:outline-none focus:border-white/30 transition-colors appearance-none cursor-pointer"
+                  className="w-full border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body focus:outline-none focus:border-cf-yellow/40 transition-colors appearance-none cursor-pointer"
+                  style={{ backgroundColor: "#1a1a1a", color: "#ffffff" }}
                 >
-                  <option value="" disabled className="text-black">
+                  <option value="" disabled style={{ backgroundColor: "#1a1a1a", color: "#ffffff" }}>
                     Selecciona una opción
                   </option>
-                  <option value="medio" className="text-black">
+                  <option value="medio" style={{ backgroundColor: "#1a1a1a", color: "#ffffff" }}>
                     Medio de comunicación
                   </option>
-                  <option value="creador" className="text-black">
+                  <option value="creador" style={{ backgroundColor: "#1a1a1a", color: "#ffffff" }}>
                     Creador de contenido
                   </option>
                 </select>
+                <ChevronDown size={14} className="absolute right-4 bottom-4 text-white/30 pointer-events-none" />
               </div>
 
               {/* Nota */}

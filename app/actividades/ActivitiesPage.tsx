@@ -113,32 +113,39 @@ export default function ActivitiesPage() {
 
                   {/* ── Text content ── */}
                   <div className="p-6 flex flex-col flex-1">
-                    <h2
-                      className="font-display text-xl font-black text-cf-white mb-1 text-center"
-                      style={{ color: "#fff" }}
-                    >
-                      {activity.title}
-                    </h2>
-                    <p className="text-cf-white/40 text-sm text-center mb-4">{activity.subtitle}</p>
-
-                    <p className="text-cf-white/60 font-body text-sm leading-relaxed mb-5 flex-1">
-                      {activity.description}
-                    </p>
-
-                    <ul className="space-y-1.5 mb-6">
-                      {activity.features.map((f) => (
-                        <li
-                          key={f}
-                          className="flex items-center gap-2 text-cf-white/50 text-sm font-body"
+                    <div className="flex flex-col gap-14 my-auto w-full">
+                      {/* Cabecera de la actividad */}
+                      <div className="flex flex-col gap-1">
+                        <h2
+                          className="font-display text-xl font-black text-cf-white text-center"
+                          style={{ color: "#fff" }}
                         >
-                          <span
-                            className="w-1.5 h-1.5 rounded-full shrink-0"
-                            style={{ backgroundColor: activity.color }}
-                          />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
+                          {activity.title}
+                        </h2>
+                        <p className="text-cf-white/40 text-sm text-center">{activity.subtitle}</p>
+                      </div>
+
+                      {/* Descripción de la actividad */}
+                      <p className="text-cf-white/60 font-body text-sm leading-relaxed text-center px-2">
+                        {activity.description}
+                      </p>
+
+                      {/* Lista de características */}
+                      <ul className="space-y-1.5 flex flex-col gap-2">
+                        {activity.features.map((f) => (
+                          <li
+                            key={f}
+                            className="flex items-center gap-2 text-cf-white/50 text-sm font-body"
+                          >
+                            <span
+                              className="w-1.5 h-1.5 rounded-full shrink-0"
+                              style={{ backgroundColor: activity.color }}
+                            />
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
                     <Link
                       href={`/actividades/${activity.slug}`}

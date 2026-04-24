@@ -178,7 +178,25 @@ h3.font-display {
 }
 
 .activity-header-spacing {
-  margin-bottom: 5rem;
+  margin-bottom: 0px;
+}
+
+/* Espaciado masivo e idéntico para Título vs Descripción vs Contenido */
+.section-header-spacing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.5rem; 
+  margin-bottom: 3.5rem;
+}
+
+/* Espaciamiento simétrico idéntico para tarjetas de Actividades (Subtítulo -> Desc -> Lista) */
+.activity-card-spacing {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem; 
+  flex: 1;
+  margin-bottom: 3.5rem;
 }
 
 .hero-description-spacing {
@@ -189,10 +207,58 @@ h3.font-display {
 }
 
 .activity-button-spacing {
-  margin-top: 3rem;
+  margin-top: 4rem;
+  /* Visually matches the gap of mt-12 + title line-height */
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  /* Separación vertical en móviles */
+  width: 100%;
+}
+
+.activity-button-spacing a,
+.activity-button-spacing button {
+  width: 100%;
+  max-width: 280px;
+  /* Ancho fijo máximo global para todos los botones */
+  justify-content: center;
+  /* Centrar icono y texto siempre */
+}
+
+@media (min-width: 640px) {
+  .activity-button-spacing {
+    flex-direction: row;
+    gap: 3.5rem;
+    /* MAYOR MARGEN LATERAL ENTRE ELLOS (56px) para la Opción 3 */
+  }
 }
 
 .esports-card-spacing {
   margin-bottom: 2rem;
+}
+
+/* === CITY CARD GLOBAL SPACING === */
+.city-card-layout {
+  position: absolute;
+  inset: 0;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Centrar absolutamente todo en el medio */
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+  gap: 3rem;
+  /* Espaciado simétrico y grande entre bloques */
+}
+
+.city-card-layout>h3,
+.city-card-layout>p,
+.city-card-layout>a {
+  margin: 0 !important;
+  /* Limpiar márgenes de utilidades Tailwind */
 }

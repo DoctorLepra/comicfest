@@ -66,7 +66,7 @@ export default function CosplayForm({ accentColor }: CosplayFormProps) {
         boxShadow: `0 0 32px ${accentColor}12`,
       }}
     >
-      <div>
+      <div className="flex flex-col items-center text-center">
         <h3 className="font-display text-xl font-black text-white mb-1">Inscripción Copa Cosplay</h3>
         <p className="text-white/40 text-sm font-body">Completa el formulario y nos contactamos contigo.</p>
       </div>

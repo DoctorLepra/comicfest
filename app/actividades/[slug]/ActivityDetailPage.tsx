@@ -107,20 +107,7 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
 
             {/* ── Back link ── */}
             <div className="max-w-5xl mx-auto px-6 md:px-10 pt-8">
-                <motion.div
-                    initial={{ opacity: 0, x: -16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="mb-10"
-                >
-                    <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 font-display font-black text-sm px-5 py-3 rounded-xl transition-all hover:scale-[1.03]"
-                        style={{ backgroundColor: "rgba(245,197,0,0.15)", color: "#f5c500", border: "1px solid rgba(245,197,0,0.40)" }}
-                    >
-                        <ArrowLeft size={15} /> Volver al inicio
-                    </Link>
-                </motion.div>
+                <div className="mb-10 h-[46px] w-full" />
 
                 {/* ── Body: description + features + form ── */}
                 {slug === "copa-cosplay" || slug === "kpop" ? (
@@ -130,7 +117,7 @@ export default function ActivityDetailPage({ slug }: { slug: string }) {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full mb-10"
+                            className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-32 xl:gap-40 w-full mb-10"
                         >
                             {/* Column 1: Descripción */}
                             <div className="flex flex-col items-start text-left">
