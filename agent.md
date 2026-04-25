@@ -102,6 +102,12 @@ Todos los flujos de usuario operan dentro del directorio `/app/` bajo un paradig
     - **Replicación Fiel y Tipografía:** Se estandarizó la información exacta de las fechas presentadas en producción, usando cápsulas translúcidas para ubicación y fechas.
     - **Vectores sobre Emojis:** Se integraron de manera nativa los iconos vectoriales de la librería `lucide-react` (`Clock`, `MapPin`, `Calendar`) para dar una estética limpia y profesional, dejando de lado los viejos emojis tipográficos.
     - **Profundidad Acuática:** Se añadió un watermark masivo sutil en opacidad del 30% como fondo de la información central de la tarjeta, empoderando el branding.
+- **[25 de Abril, 2026]** *(Juan / Agente)*:
+  - **Refinamiento UI Esports:** Se actualizó la información de premios en las tarjetas de torneos a un formato unificado ("Premio: 200.000 COP"). Se simplificó la nota informativa inferior convirtiéndola en texto plano para mayor limpieza visual. Se separaron las dos filas de juegos introduciendo un margen vertical (`mb-16`) para mejor respiración.
+  - **Corrección Bug Responsivo (Scroll-Trap):** Se detectó y resolvió un fallo grave en navegadores móviles (Chrome/Safari) donde el desbordamiento horizontal de los canvas de `ElectricBorder` obligaba al viewport a hacer un *zoom-out*, rompiendo las proporciones del `PageLoader` e invalidando los eventos de scroll de `window` que disparaban el efecto "recogible" del Navbar.
+    - Se aplicó `overflow-x: clip; width: 100%;` en el `body` (`globals.css`) para evitar que el scroll escape sin crear un nuevo contexto de formateo que rompa el evento `window.scrollY`.
+    - Se eliminó el `overflow-x-clip` forzado sobre la cuadrícula de torneos para no decapitar y preservar fielmente el difuminado original del resplandor lateral en monitores de escritorio.
+  - **Botones Sociales Móviles Flotantes:** Se enriqueció el componente `ScrollToTop.tsx` agregando hipervínculos dinámicos (Facebook, Instagram, WhatsApp) anclados encima de la flecha de "Volver Arriba". Esta integración es exclusivamente visible para dispositivos móviles (`md:hidden`) replicando la estética glassmorphism premium con bordes difuminados y opacidad, importando los datos de red oficiales desde `EVENT.socialMedia`.
 - **[Abril 2026]** *(Sprint Previo)*:
   - Consolidación del Hero universal para formas de registro `/prensa`, `/expositores`, `/trabaja-con-nosotros`. 
   - Reemplazo y unificación del enlace global de Navbar apuntando al módulo `/login`.

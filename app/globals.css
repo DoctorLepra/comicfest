@@ -45,7 +45,8 @@ body {
   background-color: #0a0a0a;
   color: #fafafa;
   font-family: "Space Grotesk", sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
+  width: 100%;
 }
 
 /* ── Scrollbar ── */
@@ -186,7 +187,7 @@ h3.font-display {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3.5rem; 
+  gap: 3.5rem;
   margin-bottom: 3.5rem;
 }
 
@@ -194,7 +195,7 @@ h3.font-display {
 .activity-card-spacing {
   display: flex;
   flex-direction: column;
-  gap: 3.5rem; 
+  gap: 3.5rem;
   flex: 1;
   margin-bottom: 3.5rem;
 }
@@ -261,4 +262,9 @@ h3.font-display {
 .city-card-layout>a {
   margin: 0 !important;
   /* Limpiar márgenes de utilidades Tailwind */
+}
+
+/* Espaciado para modales de éxito (título y texto) */
+.modal-text-spacing {
+  margin-bottom: 1.5rem;
 }

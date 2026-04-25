@@ -44,7 +44,7 @@ export default function KpopForm({ accentColor }: KpopFormProps) {
           >
             <CheckCircle size={56} style={{ color: accentColor }} />
             <div>
-              <h3 className="font-display text-2xl font-black text-white mb-2">¡REGISTRO ENVIADO!</h3>
+              <h3 className="font-display text-2xl font-black text-white modal-text-spacing mb-6">¡REGISTRO ENVIADO!</h3>
               <p className="text-white/55 font-body text-sm leading-relaxed">
                 Tu registro ha sido enviado exitosamente. Nos contactaremos con tu grupo por{" "}
                 <span className="text-green-400 font-semibold">WhatsApp</span> para confirmar su participación en el Campeonato KPOP.

@@ -18,7 +18,7 @@ const TOURNAMENTS = [
         color: "#f5c500",
         icon: "",
         spots: "32 cupos",
-        prize: "Premio especial",
+        prize: "Premio: 200.000 COP",
     },
     {
         id: "league-of-legends",
@@ -29,7 +29,7 @@ const TOURNAMENTS = [
         color: "#00d4ff",
         icon: "",
         spots: "16 equipos",
-        prize: "Premio en efectivo",
+        prize: "Premio: 200.000 COP",
     },
     {
         id: "valorant",
@@ -40,7 +40,7 @@ const TOURNAMENTS = [
         color: "#ff4655",
         icon: "",
         spots: "16 equipos",
-        prize: "Premio en efectivo",
+        prize: "Premio: 200.000 COP",
     },
     {
         id: "free-fire",
@@ -51,7 +51,7 @@ const TOURNAMENTS = [
         color: "#ff8c00",
         icon: "",
         spots: "20 escuadras",
-        prize: "Premio especial",
+        prize: "Premio: 200.000 COP",
     },
     {
         id: "cod-mobile",
@@ -62,7 +62,7 @@ const TOURNAMENTS = [
         color: "#76b900",
         icon: "",
         spots: "16 equipos",
-        prize: "Premio especial",
+        prize: "Premio: 200.000 COP",
     },
     {
         id: "lol-wildrift",
@@ -73,7 +73,7 @@ const TOURNAMENTS = [
         color: "#c89b3c",
         icon: "",
         spots: "16 equipos",
-        prize: "Premio en efectivo",
+        prize: "Premio: 200.000 COP",
     },
 ];
 
@@ -134,83 +134,88 @@ export default function EsportsPage() {
                     <span className="text-cf-white/30 text-sm font-body">— Inscripciones próximamente</span>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
-                    {TOURNAMENTS.map((t, i) => (
-                        <motion.div
-                            key={t.id}
-                            initial={{ opacity: 0, y: 40 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.08, duration: 0.6 }}
-                        >
-                            <ElectricBorder color={t.color} speed={0.8} chaos={0.01} borderRadius={16} className="w-full">
-                                <BentoCard accentColor={t.color} delay={i * 0.07}>
-                                    <div className="flex flex-col h-full min-h-[380px]">
+                {[TOURNAMENTS.slice(0, 3), TOURNAMENTS.slice(3)].map((group, groupIndex) => (
+                    <div key={groupIndex} className={`grid md:grid-cols-2 lg:grid-cols-3 gap-7 ${groupIndex === 0 ? "mb-16" : ""}`}>
+                        {group.map((t, i) => {
+                            const actualIndex = groupIndex * 3 + i;
+                            return (
+                                <motion.div
+                                    key={t.id}
+                                    initial={{ opacity: 0, y: 40 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: actualIndex * 0.08, duration: 0.6 }}
+                                >
+                                    <ElectricBorder color={t.color} speed={0.8} chaos={0.01} borderRadius={16} className="w-full">
+                                        <BentoCard accentColor={t.color} delay={actualIndex * 0.07}>
+                                            <div className="flex flex-col h-full min-h-[380px]">
 
-                                        {/* ── TiltedCard game cover ── */}
-                                        <div className="relative" style={{ height: "180px" }}>
-                                            <TiltedCard
-                                                imageSrc={t.image}
-                                                altText={t.title}
-                                                captionText={t.title}
-                                                containerHeight="180px"
-                                                containerWidth="100%"
-                                                imageHeight="180px"
-                                                imageWidth="100%"
-                                                scaleOnHover={1.04}
-                                                rotateAmplitude={8}
-                                                showTooltip
-                                                objectFit={t.id === "free-fire" ? "contain" : "cover"}
-                                            />
-                                        </div>
+                                                {/* ── TiltedCard game cover ── */}
+                                                <div className="relative" style={{ height: "180px" }}>
+                                                    <TiltedCard
+                                                        imageSrc={t.image}
+                                                        altText={t.title}
+                                                        captionText={t.title}
+                                                        containerHeight="180px"
+                                                        containerWidth="100%"
+                                                        imageHeight="180px"
+                                                        imageWidth="100%"
+                                                        scaleOnHover={1.04}
+                                                        rotateAmplitude={8}
+                                                        showTooltip
+                                                        objectFit={t.id === "free-fire" ? "contain" : "cover"}
+                                                    />
+                                                </div>
 
-                                        {/* ── Card content ── */}
-                                        <div className="p-5 flex flex-col flex-1">
-                                            <div className="flex items-center justify-between mb-3">
-                                                <span
-                                                    className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-display font-bold uppercase tracking-widest"
-                                                    style={{ color: t.color, backgroundColor: `${t.color}18`, border: `1px solid ${t.color}30` }}
-                                                >
-                                                    {t.spots}
-                                                </span>
-                                                <span className="text-2xl">{t.icon}</span>
+                                                {/* ── Card content ── */}
+                                                <div className="p-5 flex flex-col flex-1">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <span
+                                                            className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-display font-bold uppercase tracking-widest"
+                                                            style={{ color: t.color, backgroundColor: `${t.color}18`, border: `1px solid ${t.color}30` }}
+                                                        >
+                                                            {t.spots}
+                                                        </span>
+                                                        <span className="text-2xl">{t.icon}</span>
+                                                    </div>
+
+                                                    <h3 className="font-display text-xl font-black text-white text-center mb-1">
+                                                        {t.title}
+                                                    </h3>
+                                                    <p className="text-cf-white/40 text-xs text-center mb-3 font-display">{t.subtitle}</p>
+
+                                                    <p className="text-cf-white/55 font-body text-sm leading-relaxed flex-1 esports-card-spacing">
+                                                        {t.description}
+                                                    </p>
+
+                                                    {/* Prize + CTA row */}
+                                                    <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/[0.06]">
+                                                        <span className="text-xs font-body text-cf-white/35 flex items-center gap-1">
+                                                            <Trophy size={11} style={{ color: t.color }} /> {t.prize}
+                                                        </span>
+                                                        <span
+                                                            className="text-xs font-display font-bold flex items-center gap-1"
+                                                            style={{ color: t.color }}
+                                                        >
+                                                            Próximamente <ArrowRight size={11} />
+                                                        </span>
+                                                    </div>
+                                                </div>
+
                                             </div>
-
-                                            <h3 className="font-display text-xl font-black text-white text-center mb-1">
-                                                {t.title}
-                                            </h3>
-                                            <p className="text-cf-white/40 text-xs text-center mb-3 font-display">{t.subtitle}</p>
-
-                                            <p className="text-cf-white/55 font-body text-sm leading-relaxed flex-1 esports-card-spacing">
-                                                {t.description}
-                                            </p>
-
-                                            {/* Prize + CTA row */}
-                                            <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/[0.06]">
-                                                <span className="text-xs font-body text-cf-white/35 flex items-center gap-1">
-                                                    <Trophy size={11} style={{ color: t.color }} /> {t.prize}
-                                                </span>
-                                                <span
-                                                    className="text-xs font-display font-bold flex items-center gap-1"
-                                                    style={{ color: t.color }}
-                                                >
-                                                    Próximamente <ArrowRight size={11} />
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </BentoCard>
-                            </ElectricBorder>
-                        </motion.div>
-                    ))}
-                </div>
+                                        </BentoCard>
+                                    </ElectricBorder>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                ))}
 
                 {/* Info bottom note */}
-                <div className="mt-12 p-6 rounded-2xl border border-white/[0.06] bg-white/[0.02] text-center">
-                    <p className="text-cf-white/40 text-sm font-body mb-2">
+                <div className="mt-16 text-center">
+                    <p className="text-white text-sm font-body mb-2">
                         Las inscripciones a los torneos estarán disponibles próximamente.
                     </p>
-                    <p className="text-cf-white/25 text-xs font-body">
+                    <p className="text-white text-xs font-body">
                         Cupos limitados por torneo · Más información en nuestro WhatsApp 3244120444
                     </p>
                 </div>

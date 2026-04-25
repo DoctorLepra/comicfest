@@ -243,7 +243,7 @@ export default function TrabajaConNosotrosPage() {
               >
                 <CheckCircle size={56} style={{ color: accentColor }} />
                 <div>
-                  <h3 className="font-display text-2xl font-black text-white mb-2 uppercase">¡REGISTRO ENVIADO!</h3>
+                  <h3 className="font-display text-2xl font-black text-white modal-text-spacing mb-6 uppercase">¡REGISTRO ENVIADO!</h3>
                   <p className="text-white/55 font-body text-sm leading-relaxed">
                     Nos pondremos en contacto contigo pronto. ¡Gracias por querer ser parte del equipo ComicFest!
                   </p>

@@ -34,7 +34,7 @@ export default function GenericForm({ activity, accentColor }: GenericFormProps)
         }}
       >
         <CheckCircle size={48} style={{ color: accentColor }} />
-        <h3 className="font-display text-2xl font-black text-white">¡Solicitud recibida!</h3>
+        <h3 className="font-display text-2xl font-black text-white modal-text-spacing mb-6">¡Solicitud recibida!</h3>
         <p className="text-white/55 font-body text-sm max-w-xs">
           Nos pondremos en contacto contigo por WhatsApp para darte más información sobre{" "}
           <span style={{ color: accentColor }}>{activity.title}</span>.
