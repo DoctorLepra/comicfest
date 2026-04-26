@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import LaserFlowRB from "./LaserFlowRB";
 
 export default function PageLoader() {
@@ -41,19 +42,19 @@ export default function PageLoader() {
               verticalSizing={2}
               wispDensity={1}
               wispSpeed={15}
-              wispIntensity={5}
+              wispIntensity={1.5}
               flowSpeed={0.35}
               flowStrength={0.25}
-              fogIntensity={0.45}
+              fogIntensity={0.1}
               fogScale={0.3}
               decay={1.1}
-              falloffStart={1.2}
+              falloffStart={0.65}
               fogFallSpeed={0.6}
             />
           </div>
 
           {/* Overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cf-black/30 to-cf-black/80 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-cf-black/80 pointer-events-none" />
 
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center gap-8 px-6 text-center">
@@ -66,10 +67,13 @@ export default function PageLoader() {
               <p className="text-cf-yellow/60 font-display text-sm tracking-[0.4em] uppercase mb-2">
                 Colombia
               </p>
-              <h1 className="font-display text-5xl md:text-7xl font-black tracking-tight text-cf-white glow-yellow-text">
-                COMIC
-                <span className="text-gradient">FEST</span>
-              </h1>
+              <Image
+                src="/images/grid-comicfest.png"
+                alt="Comicfest Loading"
+                width={320}
+                height={120}
+                className="mx-auto object-contain glow-yellow-text"
+              />
             </motion.div>
 
             {/* Tagline */}
@@ -77,7 +81,7 @@ export default function PageLoader() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="text-cf-white/50 font-body text-sm tracking-widest uppercase"
+              className="text-cf-white/50 font-display text-sm tracking-widest uppercase"
             >
               El lugar donde la magia se hace realidad
             </motion.p>

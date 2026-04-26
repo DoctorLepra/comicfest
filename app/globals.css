@@ -14,13 +14,27 @@
 
   /* ── Typography ── */
   --font-display: "Space Grotesk", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+figure {
   margin: 0;
-  padding: 0;
 }
 
 html {
@@ -30,17 +44,20 @@ html {
 body {
   background-color: #0a0a0a;
   color: #fafafa;
-  font-family: "Inter", sans-serif;
-  overflow-x: hidden;
+  font-family: "Space Grotesk", sans-serif;
+  overflow-x: clip;
+  width: 100%;
 }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #111111;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #f5c500;
   border-radius: 3px;
@@ -52,9 +69,22 @@ body {
   color: #0a0a0a;
 }
 
-/* ── Utility classes ── */
+/* ── Typography utilities ── */
 .font-display {
   font-family: "Space Grotesk", sans-serif;
+}
+
+/* All card & section headings → always all-caps */
+h1.font-display,
+h2.font-display,
+h3.font-display {
+  text-transform: uppercase;
+}
+
+/* ── Performance: skip paint/layout for off-screen sections ── */
+.section-below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 900px;
 }
 
 .text-gradient {
@@ -85,33 +115,35 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.08) 2px,
-    rgba(0, 0, 0, 0.08) 4px
-  );
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px);
   pointer-events: none;
   z-index: 1;
 }
 
 /* ── Animations ── */
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-12px);
   }
 }
 
 @keyframes pulse-glow {
+
   0%,
   100% {
     box-shadow: 0 0 20px rgba(245, 197, 0, 0.3);
   }
+
   50% {
     box-shadow: 0 0 40px rgba(245, 197, 0, 0.6);
   }
@@ -121,6 +153,7 @@ body {
   0% {
     transform: translateY(-100%);
   }
+
   100% {
     transform: translateY(100vh);
   }
@@ -132,4 +165,106 @@ body {
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ── Spacing utilities ── */
+.card-action-spacing {
+  margin-top: auto;
+  padding-top: 2rem;
+  width: 100%;
+}
+
+.hero-countdown-spacing {
+  margin-bottom: 3rem;
+}
+
+.activity-header-spacing {
+  margin-bottom: 0px;
+}
+
+/* Espaciado masivo e idéntico para Título vs Descripción vs Contenido */
+.section-header-spacing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.5rem;
+  margin-bottom: 3.5rem;
+}
+
+/* Espaciamiento simétrico idéntico para tarjetas de Actividades (Subtítulo -> Desc -> Lista) */
+.activity-card-spacing {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+  flex: 1;
+  margin-bottom: 3.5rem;
+}
+
+.hero-description-spacing {
+  margin-top: 3rem;
+  text-align: center;
+  display: block;
+  width: 100%;
+}
+
+.activity-button-spacing {
+  margin-top: 4rem;
+  /* Visually matches the gap of mt-12 + title line-height */
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  /* Separación vertical en móviles */
+  width: 100%;
+}
+
+.activity-button-spacing a,
+.activity-button-spacing button {
+  width: 100%;
+  max-width: 280px;
+  /* Ancho fijo máximo global para todos los botones */
+  justify-content: center;
+  /* Centrar icono y texto siempre */
+}
+
+@media (min-width: 640px) {
+  .activity-button-spacing {
+    flex-direction: row;
+    gap: 3.5rem;
+    /* MAYOR MARGEN LATERAL ENTRE ELLOS (56px) para la Opción 3 */
+  }
+}
+
+.esports-card-spacing {
+  margin-bottom: 2rem;
+}
+
+/* === CITY CARD GLOBAL SPACING === */
+.city-card-layout {
+  position: absolute;
+  inset: 0;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Centrar absolutamente todo en el medio */
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+  gap: 3rem;
+  /* Espaciado simétrico y grande entre bloques */
+}
+
+.city-card-layout>h3,
+.city-card-layout>p,
+.city-card-layout>a {
+  margin: 0 !important;
+  /* Limpiar márgenes de utilidades Tailwind */
+}
+
+/* Espaciado para modales de éxito (título y texto) */
+.modal-text-spacing {
+  margin-bottom: 1.5rem;
 }
