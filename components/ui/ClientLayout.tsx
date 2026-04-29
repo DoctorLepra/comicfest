@@ -8,7 +8,7 @@ const NO_FOOTER_ROUTES = ["/login", "/registro"];
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const showFooter = !NO_FOOTER_ROUTES.includes(pathname);
+  const showFooter = !NO_FOOTER_ROUTES.includes(pathname) && !pathname.startsWith("/dashboard");
 
   return (
     <>

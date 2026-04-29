@@ -4,25 +4,55 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Squares from "@/components/ui/Squares";
 import Link from "next/link";
-import { Send, CheckCircle, ArrowLeft, ChevronDown } from "lucide-react";
+import { Send, CheckCircle, ChevronDown } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function PrensaPage() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const [formData, setFormData] = useState({
+    nombre: "",
+    documento: "",
+    telefono: "",
+    instagram: "",
+    ciudad: "",
+    email: "",
+    tipo: "",
+  });
 
   const accentColor = "#f5c500";
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1400));
-    setLoading(false);
-    setSent(true);
+    setErrorMsg("");
+
+    try {
+      const { error } = await supabase
+        .from('applications')
+        .insert({
+          type: formData.tipo === 'medio' ? 'media_application' : 'creator_application',
+          form_data: formData
+        });
+
+      if (error) throw error;
+      setSent(true);
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg("Error al enviar el formulario. Intenta nuevamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen" style={{ paddingTop: "80px" }}>
-      {/* ── Hero header con Squares background ── */}
       <section className="relative overflow-hidden" style={{ height: "580px" }}>
         <div className="absolute inset-0">
           <Squares
@@ -53,7 +83,6 @@ export default function PrensaPage() {
               PRENSA
             </h1>
 
-            {/* ── Copa Cosplay Style Replacement ── */}
             <div className="flex flex-col items-center mt-12 text-center">
               <p className="text-white font-display font-bold text-lg max-w-xl mx-auto activity-header-spacing text-center">
                 Si tienes un medio de comunicación o eres creador de contenido, puedes ayudarnos a que cada vez seamos más los que hacemos parte del universo Comicfest.
@@ -73,14 +102,12 @@ export default function PrensaPage() {
         </div>
       </section>
 
-      {/* ── Back link ── */}
       <div className="px-6 md:px-12 pt-10 pb-2 flex flex-col items-center">
         <div className="w-full max-w-4xl">
           <div className="h-[46px] w-full" />
         </div>
       </div>
 
-      {/* ── Formulario de registro ── */}
       <div id="formulario" className="px-6 md:px-12 pb-24 pt-16 flex flex-col items-center scroll-mt-28">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -130,14 +157,22 @@ export default function PrensaPage() {
                 <p className="text-white/40 text-sm font-body">Completa tus datos para solicitar acreditación de prensa.</p>
               </div>
 
-              {/* Fila 1: Nombre + Documento */}
+              {errorMsg && (
+                <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl text-sm text-center">
+                  {errorMsg}
+                </div>
+              )}
+
               <div className="grid sm:grid-cols-2 gap-5">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                     Nombre Completo <span className="text-red-500">*</span></label>
                   <input
                     type="text"
+                    name="nombre"
                     required
+                    value={formData.nombre}
+                    onChange={handleChange}
                     placeholder="Tu nombre completo"
                     className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                   />
@@ -147,33 +182,40 @@ export default function PrensaPage() {
                     Número de documento <span className="text-red-500">*</span></label>
                   <input
                     type="text"
+                    name="documento"
                     required
+                    value={formData.documento}
+                    onChange={handleChange}
                     placeholder="Tu número"
                     className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                   />
                 </div>
               </div>
 
-              {/* Fila 2: Contacto */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                   Número de contacto <span className="text-red-500">*</span></label>
                 <input
                   type="tel"
+                  name="telefono"
                   required
+                  value={formData.telefono}
+                  onChange={handleChange}
                   placeholder="3XX XXX XXXX"
                   className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                 />
               </div>
 
-              {/* Fila 3: Instagram + Ciudad */}
               <div className="grid sm:grid-cols-2 gap-5">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                     Perfil de Instagram <span className="text-red-500">*</span></label>
                   <input
                     type="text"
+                    name="instagram"
                     required
+                    value={formData.instagram}
+                    onChange={handleChange}
                     placeholder="@tuinstagram"
                     className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                   />
@@ -183,33 +225,39 @@ export default function PrensaPage() {
                     Ciudad de residencia <span className="text-red-500">*</span></label>
                   <input
                     type="text"
+                    name="ciudad"
                     required
+                    value={formData.ciudad}
+                    onChange={handleChange}
                     placeholder="Ej. Bogotá"
                     className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                   />
                 </div>
               </div>
 
-              {/* Fila 4: Email */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                   Email <span className="text-red-500">*</span></label>
                 <input
                   type="email"
+                  name="email"
                   required
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="tu@email.com"
                   className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body placeholder-white/20 focus:outline-none focus:border-white/30 transition-colors"
                 />
               </div>
 
-              {/* Fila 5: Eres... */}
               <div className="relative flex flex-col gap-1.5">
                 <label className="text-xs font-display font-semibold text-white/60 uppercase tracking-widest">
                   Eres... <span className="text-red-500">*</span>
                 </label>
                 <select
+                  name="tipo"
                   required
-                  defaultValue=""
+                  value={formData.tipo}
+                  onChange={handleChange}
                   className="w-full border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-body focus:outline-none focus:border-cf-yellow/40 transition-colors appearance-none cursor-pointer"
                   style={{ backgroundColor: "#1a1a1a", color: "#ffffff" }}
                 >
@@ -226,14 +274,12 @@ export default function PrensaPage() {
                 <ChevronDown size={14} className="absolute right-4 bottom-4 text-white/30 pointer-events-none" />
               </div>
 
-              {/* Nota */}
               <div className="pt-2">
                 <p className="text-white/30 text-xs font-body leading-relaxed">
                   La invitación es válida para los 3 días del evento, es única e intransferible y no incluye gastos de transporte ni alimentación.
                 </p>
               </div>
 
-              {/* Submit */}
               <button
                 type="submit"
                 disabled={loading}

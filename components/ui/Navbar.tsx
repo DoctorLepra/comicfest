@@ -246,6 +246,8 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
+  if (pathname.startsWith("/dashboard")) return null;
+
   return (
     <>
       <header
