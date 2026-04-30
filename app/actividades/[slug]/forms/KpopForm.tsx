@@ -14,7 +14,7 @@ interface Participant {
   documento: string;
   telefono: string;
   email: string;
-  consentimiento: File | null;
+  consentimiento?: File | null;
   consentimiento_url?: string;
 }
 
