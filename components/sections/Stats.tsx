@@ -31,7 +31,7 @@ export default function Stats() {
                 <div className="font-display text-3xl md:text-4xl font-black text-gradient mb-1">
                   {stat.value}
                 </div>
-                <p className="text-cf-white/50 text-sm font-body leading-tight">
+                <p className="text-cf-white/50 text-sm font-display leading-tight">
                   {stat.label}
                 </p>
               </div>

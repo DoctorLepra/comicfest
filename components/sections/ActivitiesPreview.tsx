@@ -26,7 +26,6 @@ export default function ActivitiesPreview() {
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-black text-cf-white">
             ACTIVIDADES
           </h2>
-          <div className="w-16 h-1 bg-cf-yellow mt-4" />
         </motion.div>
 
         {/* Bento grid */}
@@ -37,7 +36,12 @@ export default function ActivitiesPreview() {
               initial={{ opacity: 0, y: 40 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: i * 0.08, duration: 0.6 }}
-              className={`group relative glass border border-cf-white/5 rounded-2xl p-6 md:p-8 overflow-hidden hover:border-cf-yellow/25 transition-all duration-300 cursor-pointer ${i === 0 ? "md:col-span-2 lg:col-span-1" : ""}`}
+              className={`group relative rounded-2xl p-6 md:p-8 overflow-hidden transition-all duration-300 cursor-pointer ${i === 0 ? "md:col-span-2 lg:col-span-1" : ""}`}
+              style={{
+                background: "linear-gradient(135deg, rgba(20,20,20,0.97) 0%, rgba(30,30,30,0.95) 100%)",
+                border: `1px solid ${activity.color}30`,
+                boxShadow: `0 0 24px ${activity.color}10`,
+              }}
             >
               {/* Background glow on hover */}
               <div
@@ -66,17 +70,17 @@ export default function ActivitiesPreview() {
               <h3 className="font-display text-xl md:text-2xl font-black text-cf-white mb-1 group-hover:text-gradient transition-all duration-300">
                 {activity.title}
               </h3>
-              <p className="text-cf-white/40 text-sm font-body mb-4">{activity.subtitle}</p>
+              <p className="text-cf-white/40 text-sm font-display mb-4">{activity.subtitle}</p>
 
               {/* Description */}
-              <p className="text-cf-white/60 text-sm font-body leading-relaxed mb-6 line-clamp-2">
+              <p className="text-cf-white/60 text-sm font-display leading-relaxed mb-6 line-clamp-2">
                 {activity.description}
               </p>
 
               {/* Features */}
               <ul className="space-y-1.5 mb-6">
                 {activity.features.slice(0, 3).map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-cf-white/50 text-xs font-body">
+                  <li key={f} className="flex items-center gap-2 text-cf-white/50 text-xs font-display">
                     <span className="w-1 h-1 rounded-full bg-cf-yellow/60 shrink-0" />
                     {f}
                   </li>

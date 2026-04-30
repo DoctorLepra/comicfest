@@ -1,19 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
-import Footer from "@/components/ui/Footer";
 import PageLoader from "@/components/ui/PageLoader";
+import ClientLayout from "@/components/ui/ClientLayout";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-body",
   weight: ["300", "400", "500", "600", "700"],
 });
 
@@ -47,9 +41,12 @@ export const metadata: Metadata = {
       "La convención de cultura pop más grande de Colombia. 13-15 de Marzo, Centro Comercial La 14, Pereira.",
     siteName: "Comicfest Colombia",
     locale: "es_CO",
-    type: "website",
   },
-  themeColor: "#0a0a0a",
+  icons: {
+    icon: "/images/navbar.png",
+    shortcut: "/images/navbar.png",
+    apple: "/images/navbar.png",
+  },
 };
 
 export default function RootLayout({
@@ -58,12 +55,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={`${spaceGrotesk.variable} ${inter.variable}`}>
-      <body className="bg-cf-black text-cf-white font-body antialiased">
+    <html lang="es" className={`${spaceGrotesk.variable}`}>
+      <body className="bg-cf-black text-cf-white font-display antialiased">
         <PageLoader />
         <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
