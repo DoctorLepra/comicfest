@@ -15,16 +15,29 @@ const getSupabaseAdmin = () => {
 export async function GET() {
   try {
     const supabaseAdmin = getSupabaseAdmin();
-    const { data, error } = await supabaseAdmin
+    
+    // Fetch profiles
+    const { data: profiles, error: profilesError } = await supabaseAdmin
       .from('profiles')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
-    }
+    if (profilesError) throw profilesError;
 
-    return NextResponse.json({ users: data }, { status: 200 });
+    // Fetch auth users to check requires_password_change
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.listUsers();
+    if (authError) throw authError;
+
+    // Combine them
+    const combinedUsers = profiles.map((p: any) => {
+      const authUser = authData.users.find(u => u.id === p.id);
+      return {
+        ...p,
+        requires_password_change: authUser?.user_metadata?.requires_password_change ?? false
+      };
+    });
+
+    return NextResponse.json({ users: combinedUsers }, { status: 200 });
   } catch (err) {
     console.error('Unexpected error fetching users:', err);
     return NextResponse.json(

@@ -72,7 +72,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
         {SIDEBAR_LINKS.map((link) => {
-          const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
+          const isActive = link.href === "/dashboard" 
+            ? pathname === "/dashboard" 
+            : pathname.startsWith(link.href);
           const Icon = link.icon;
           
           return (

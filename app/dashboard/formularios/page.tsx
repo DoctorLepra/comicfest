@@ -589,7 +589,7 @@ export default function FormulariosPage() {
                         type="checkbox"
                         checked={selectedIds.size === filteredSorted.length && filteredSorted.length > 0}
                         onChange={selectAll}
-                        className="w-3.5 h-3.5 accent-yellow-400 cursor-pointer"
+                        className="w-4 h-4 rounded border-white/40 bg-white/10 checked:bg-white checked:border-white cursor-pointer appearance-none relative before:content-['✓'] before:absolute before:text-black before:text-[10px] before:font-bold before:opacity-0 checked:before:opacity-100 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 flex items-center justify-center transition-all"
                       />
                     </th>
                     <th className="px-3 py-3 text-[10px] font-display font-bold text-white/30 uppercase tracking-wider w-8 text-center">#</th>
@@ -618,7 +618,7 @@ export default function FormulariosPage() {
                           <tr key={row.id} className={clsx("transition-colors", isChecked ? "bg-cf-yellow/5" : "hover:bg-white/[0.025]")}>
                             <td className="px-3 py-3 w-8">
                               <input type="checkbox" checked={isChecked} onChange={() => toggleSelect(row.id)}
-                                className="w-3.5 h-3.5 accent-yellow-400 cursor-pointer" />
+                                className="w-4 h-4 rounded border-white/40 bg-white/10 checked:bg-white checked:border-white cursor-pointer appearance-none relative before:content-['✓'] before:absolute before:text-black before:text-[10px] before:font-bold before:opacity-0 checked:before:opacity-100 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 flex items-center justify-center transition-all" />
                             </td>
                             <td className="px-3 py-3 text-center text-xs font-mono text-white/25">{globalIndex}</td>
                             {/* Fecha */}
@@ -712,7 +712,7 @@ export default function FormulariosPage() {
                         <tr className={clsx("transition-colors", isChecked ? "bg-cf-yellow/5" : "hover:bg-white/[0.025]")}>
                           <td className="px-3 py-3 w-8">
                             <input type="checkbox" checked={isChecked} onChange={() => toggleSelect(row.id)}
-                              className="w-3.5 h-3.5 accent-yellow-400 cursor-pointer" />
+                              className="w-4 h-4 rounded border-white/40 bg-white/10 checked:bg-white checked:border-white cursor-pointer appearance-none relative before:content-['✓'] before:absolute before:text-black before:text-[10px] before:font-bold before:opacity-0 checked:before:opacity-100 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 flex items-center justify-center transition-all" />
                           </td>
                           <td className="px-3 py-3 text-center text-xs font-mono text-white/25">{globalIndex}</td>
                           {columns.map((col) => {
