@@ -139,7 +139,8 @@ export default function EventDetailsPage() {
       // So if editingStandData is specifically flagged as global, we set event_id null.
       // Let's check a flag. We'll pass a special initialData for global creation.
       if (editingStandData?.isGlobal) {
-        payload.event_id = null; // @ts-ignore
+        // @ts-ignore
+        payload.event_id = null as any;
       }
       
       const { error } = await supabase.from('stands').insert([payload]);
