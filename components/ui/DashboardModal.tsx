@@ -35,7 +35,7 @@ export default function DashboardModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`w-full ${maxWidth} rounded-2xl shadow-2xl overflow-hidden my-auto`}
+            className={`w-full ${maxWidth} rounded-2xl shadow-2xl my-auto`}
             style={{
               backgroundColor: "#111111", // cf-black-2
               border: "1px solid rgba(245, 197, 0, 0.15)",

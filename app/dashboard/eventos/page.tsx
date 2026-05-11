@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, Calendar, MapPin, MoreHorizontal, ChevronDown, ChevronRight, Copy, Settings, Search, ArrowDownAZ, ArrowUpZA, Filter, Check } from "lucide-react";
+import { Plus, Edit2, Trash2, Calendar, MapPin, MoreHorizontal, ChevronDown, ChevronRight, Copy, Settings, Search, ArrowDownAZ, ArrowUpZA, Filter, Check, Clock, Users, LayoutDashboard, ShieldCheck, Share2, ExternalLink, Globe, EyeOff } from "lucide-react";
 import clsx from "clsx";
 import StandModal from "@/components/ui/StandModal";
 import PolicyFormModal from "@/components/ui/PolicyFormModal";
 import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
+import EventModal from "@/components/ui/EventModal";
+import DashboardModal from "@/components/ui/DashboardModal";
 
 // Tipos de prueba (luego vendrán de Supabase)
 type EventItem = {
@@ -25,13 +28,16 @@ type StandCategory = {
 
 type PolicyItem = {
   id: string;
-  name: string;
 };
 
 export default function EventosPage() {
   const [openAccordion, setOpenAccordion] = useState<"stands" | "policies" | null>(null);
   const [isStandModalOpen, setIsStandModalOpen] = useState(false);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
+  const [eventToDuplicate, setEventToDuplicate] = useState<any>(null);
   const [events, setEvents] = useState<any[]>([]);
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,6 +59,20 @@ export default function EventosPage() {
     }
   };
 
+  const handleStatusToggle = async (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+    const { error } = await supabase
+      .from('events')
+      .update({ status: newStatus })
+      .eq('id', id);
+    
+    if (error) {
+      console.error("Error updating status:", error);
+    } else {
+      fetchEvents();
+    }
+  };
+
   const handleDeleteEvent = async (id: string) => {
     if (confirm("¿Estás seguro de eliminar este evento?")) {
       const { error } = await supabase.from('events').delete().eq('id', id);
@@ -63,6 +83,98 @@ export default function EventosPage() {
         setSelectedEvents(selectedEvents.filter(eId => eId !== id));
       }
     }
+  };
+
+  const handleSaveEvent = async (data: any) => {
+    const { data: newEvent, error } = await supabase
+      .from('events')
+      .insert([{
+        name: data.name,
+        description: data.description,
+        start_date: data.start_date,
+        end_date: data.end_date,
+        open_time: data.open_time,
+        close_time: data.close_time,
+        location: data.location,
+        status: 'draft'
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating event:", error);
+      alert("Error al crear el evento");
+    } else if (newEvent) {
+      setIsEventModalOpen(false);
+      fetchEvents();
+      router.push(`/dashboard/eventos/${newEvent.id}`);
+    }
+  };
+
+  const handleDuplicateEvent = async (eventId: string) => {
+    const { data: originalEvent, error: fetchError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', eventId)
+      .single();
+
+    if (fetchError || !originalEvent) {
+      alert("Error al cargar el evento original");
+      return;
+    }
+
+    const { data: newEvent, error: copyError } = await supabase
+      .from('events')
+      .insert([{
+        name: `${originalEvent.name} (Copia)`,
+        description: originalEvent.description,
+        location: originalEvent.location,
+        start_date: originalEvent.start_date,
+        end_date: originalEvent.end_date,
+        open_time: originalEvent.open_time,
+        close_time: originalEvent.close_time,
+        status: 'draft'
+      }])
+      .select()
+      .single();
+
+    if (copyError || !newEvent) {
+      alert("Error al duplicar el evento");
+      return;
+    }
+
+    const { data: originalStands } = await supabase
+      .from('stands')
+      .select('*')
+      .eq('event_id', eventId);
+
+    if (originalStands && originalStands.length > 0) {
+      const newStands = originalStands.map(s => ({
+        identifier: s.identifier,
+        numeracion: s.numeracion,
+        status: s.status,
+        base_price: s.base_price,
+        dimensions: s.dimensions,
+        category: s.category,
+        description: s.description,
+        sale_start_date: s.sale_start_date,
+        sale_end_date: s.sale_end_date,
+        event_id: newEvent.id
+      }));
+
+      const { error: standsError } = await supabase
+        .from('stands')
+        .insert(newStands);
+
+      if (standsError) {
+        console.error("Error copying stands:", standsError);
+      }
+    }
+
+    alert("Evento duplicado con éxito");
+    setIsDuplicateModalOpen(false);
+    setEventToDuplicate(null);
+    fetchEvents();
   };
 
   const handleDeleteSelectedEvents = async () => {
@@ -122,12 +234,8 @@ export default function EventosPage() {
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
   const [editingPolicy, setEditingPolicy] = useState<any>(null);
 
-  useEffect(() => {
-    // Ya se cargan arriba
-  }, []);
-
   const fetchStands = async () => {
-    const { data, error } = await supabase.from('stands').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('stands').select('*').is('event_id', null).order('created_at', { ascending: false });
     if (data) {
       setStands(data);
     }
@@ -149,11 +257,13 @@ export default function EventosPage() {
       const rawPrice = Number(data.precio.replace(/\D/g, ""));
       const payload = {
         identifier: data.nombre,
+        numeracion: data.numeracion,
         category: data.categoria,
         dimensions: data.metraje,
         base_price: rawPrice,
         status: 'available',
-        description: data.descripcion
+        description: data.descripcion,
+        event_id: null // Ensure it's explicitly global
       };
 
       if (editingStand) {
@@ -173,7 +283,7 @@ export default function EventosPage() {
   };
 
   const fetchPolicies = async () => {
-    const { data, error } = await supabase.from('policies').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('policies').select('*').is('event_id', null).order('created_at', { ascending: false });
     if (data) {
       setPolicies(data);
     }
@@ -216,14 +326,12 @@ export default function EventosPage() {
     fetchPolicies();
   };
 
-
   const toggleAccordion = (section: "stands" | "policies") => {
     setOpenAccordion(openAccordion === section ? null : section);
   };
 
   return (
     <div className="p-6 w-full h-full flex flex-col gap-6">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-display font-bold text-white mb-1 flex items-center gap-3">
@@ -233,14 +341,16 @@ export default function EventosPage() {
           <p className="text-white/60 text-sm">Administra los stands, detalles, reservas de cada evento</p>
         </div>
         
-        <button className="flex items-center gap-2 px-5 py-3 rounded-xl font-display font-bold text-sm bg-cf-yellow text-black hover:bg-yellow-400 hover:scale-[1.02] transition-all">
+        <button 
+          onClick={() => setIsEventModalOpen(true)}
+          className="flex items-center gap-2 px-5 py-3 rounded-xl font-display font-bold text-sm bg-cf-yellow text-black hover:bg-yellow-400 hover:scale-[1.02] transition-all"
+        >
           <Plus size={18} />
           Crear evento
         </button>
       </div>
 
       <div className="flex flex-col gap-4">
-        {/* Acordeón: Stands */}
         <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
           <button 
             onClick={() => toggleAccordion("stands")}
@@ -272,7 +382,9 @@ export default function EventosPage() {
                       <div className="flex items-center gap-4">
                         <span className="text-white/40 font-mono text-sm">{idx + 1}.</span>
                         <div className="flex flex-col">
-                          <span className="text-white font-medium text-sm">{stand.identifier}</span>
+                          <span className="text-white font-medium text-sm">
+                            {stand.identifier} {stand.numeracion ? `(#${stand.numeracion})` : ''}
+                          </span>
                           <span className="text-[10px] text-white/40">{stand.category} • {stand.dimensions}</span>
                         </div>
                       </div>
@@ -301,7 +413,6 @@ export default function EventosPage() {
           )}
         </div>
 
-        {/* Acordeón: Políticas */}
         <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
           <button 
             onClick={() => toggleAccordion("policies")}
@@ -362,7 +473,6 @@ export default function EventosPage() {
         </div>
       </div>
 
-      {/* Tabla de Eventos */}
       <div className="flex-1 flex flex-col mt-4">
         <div className="py-4 flex items-center gap-3 overflow-x-auto">
           <div className="flex items-center gap-2 mr-2 whitespace-nowrap">
@@ -475,12 +585,13 @@ export default function EventosPage() {
               {paginatedEvents.map((event) => (
                 <tr 
                   key={event.id} 
+                  onClick={() => router.push(`/dashboard/eventos/${event.id}`)}
                   className={clsx(
-                    "transition-colors group",
+                    "transition-colors group cursor-pointer",
                     selectedEvents.includes(event.id) ? "bg-cf-yellow/5" : "hover:bg-white/[0.02]"
                   )}
                 >
-                  <td className="px-6 py-4 w-12">
+                  <td className="px-6 py-4 w-12" onClick={(e) => e.stopPropagation()}>
                     <input 
                       type="checkbox" 
                       className="w-4 h-4 rounded border-white/40 bg-white/10 checked:bg-white checked:border-white cursor-pointer appearance-none relative before:content-['✓'] before:absolute before:text-black before:text-xs before:font-bold before:opacity-0 checked:before:opacity-100 before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 flex items-center justify-center transition-all"
@@ -505,19 +616,27 @@ export default function EventosPage() {
                     </div>
                   </td>
                    <td className="px-6 py-4 text-sm text-white/60">{event.start_date}</td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="relative inline-block text-left group/dropdown">
                       <button className="p-2 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors focus:outline-none">
                         <MoreHorizontal size={16} />
                       </button>
                       
-                      {/* Dropdown Menu */}
-                      <div className="absolute right-0 mt-2 w-48 rounded-xl bg-[#141414] border border-white/10 shadow-2xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-20 overflow-hidden translate-y-1 group-hover/dropdown:translate-y-0">
+                      <div className="absolute right-0 mt-2 w-48 rounded-xl bg-[#141414] border border-white/10 shadow-2xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-20 overflow-hidden translate-y-1 group-hover/dropdown:translate-y-0 text-left">
                         <div className="py-1">
-                          <button className="w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center gap-2">
+                          <button 
+                            onClick={() => router.push(`/dashboard/eventos/${event.id}`)}
+                            className="w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center gap-2"
+                          >
                             <Settings size={14} /> Administrar
                           </button>
-                          <button className="w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center gap-2">
+                          <button 
+                            onClick={() => {
+                              setEventToDuplicate(event);
+                              setIsDuplicateModalOpen(true);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center gap-2"
+                          >
                             <Copy size={14} /> Duplicar
                           </button>
                            <button 
@@ -536,7 +655,6 @@ export default function EventosPage() {
           </table>
         </div>
         
-        {/* Paginador */}
         {totalPages > 1 && (
           <div className="p-4 border-t border-white/10 flex items-center justify-between bg-white/[0.01]">
             <span className="text-xs text-white/40 font-mono">
@@ -612,6 +730,46 @@ export default function EventosPage() {
         }}
         onSave={handleSavePolicy}
       />
+      <EventModal
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        onSave={handleSaveEvent}
+      />
+
+      <DashboardModal
+        isOpen={isDuplicateModalOpen}
+        onClose={() => setIsDuplicateModalOpen(false)}
+        title="Duplicar Evento"
+        icon={<Copy size={20} />}
+        maxWidth="max-w-md"
+        footer={
+          <>
+            <button 
+              onClick={() => setIsDuplicateModalOpen(false)}
+              className="px-5 py-2.5 rounded-xl font-bold text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button 
+              onClick={() => handleDuplicateEvent(eventToDuplicate.id)}
+              className="px-5 py-2.5 rounded-xl font-bold text-sm bg-cf-yellow text-black hover:bg-yellow-400 hover:scale-[1.02] transition-all"
+            >
+              Duplicar ahora
+            </button>
+          </>
+        }
+      >
+        <div className="flex flex-col gap-4 py-2">
+          <p className="text-white/70 leading-relaxed text-sm">
+            ¿Estás seguro de que deseas duplicar el evento <strong className="text-white">{eventToDuplicate?.name}</strong>?
+          </p>
+          <div className="p-4 rounded-2xl bg-cf-yellow/5 border border-cf-yellow/10">
+            <p className="text-[11px] text-cf-yellow/80 leading-tight">
+              <strong>Nota:</strong> Se duplicarán también todos los stands asociados a este evento. El nuevo evento se creará en estado "Borrador".
+            </p>
+          </div>
+        </div>
+      </DashboardModal>
     </div>
   );
 }

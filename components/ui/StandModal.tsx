@@ -14,10 +14,13 @@ interface StandModalProps {
 export default function StandModal({ isOpen, onClose, onSave, initialData }: StandModalProps) {
   const [formData, setFormData] = useState({
     nombre: "",
+    numeracion: "",
     categoria: "",
     metraje: "",
     descripcion: "",
     precio: "",
+    sale_start_date: "",
+    sale_end_date: "",
   });
 
   const [m2Calculado, setM2Calculado] = useState("");
@@ -29,18 +32,24 @@ export default function StandModal({ isOpen, onClose, onSave, initialData }: Sta
     if (initialData && isOpen) {
       setFormData({
         nombre: initialData.identifier || "",
+        numeracion: initialData.numeracion || "",
         categoria: initialData.category || "",
         metraje: initialData.dimensions || "",
         descripcion: initialData.description || "",
         precio: initialData.base_price ? new Intl.NumberFormat("es-CO").format(initialData.base_price) : "",
+        sale_start_date: initialData.sale_start_date ? new Date(initialData.sale_start_date).toISOString().slice(0, 16) : "",
+        sale_end_date: initialData.sale_end_date ? new Date(initialData.sale_end_date).toISOString().slice(0, 16) : "",
       });
     } else if (!initialData && isOpen) {
       setFormData({
         nombre: "",
+        numeracion: "",
         categoria: "",
         metraje: "",
         descripcion: "",
         precio: "",
+        sale_start_date: "",
+        sale_end_date: "",
       });
     }
   }, [initialData, isOpen]);
@@ -120,6 +129,18 @@ export default function StandModal({ isOpen, onClose, onSave, initialData }: Sta
           </div>
 
           <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-white/40 uppercase tracking-wider">Numeración</label>
+            <input 
+              type="number"
+              min="0"
+              value={formData.numeracion}
+              onChange={(e) => setFormData({ ...formData, numeracion: e.target.value })}
+              placeholder="Ej. 1, 2, 3..."
+              className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cf-yellow/50 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
             <label className="text-xs font-bold text-white/40 uppercase tracking-wider">Categoría</label>
             <div className="relative">
               <select 
@@ -188,6 +209,31 @@ export default function StandModal({ isOpen, onClose, onSave, initialData }: Sta
               />
             </div>
           </div>
+          
+          {initialData?.event_id && (
+            <>
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-white/40 uppercase tracking-wider">Inicio de Ventas</label>
+                <input 
+                  type="datetime-local" 
+                  value={formData.sale_start_date}
+                  onChange={(e) => setFormData({ ...formData, sale_start_date: e.target.value })}
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cf-yellow/50 transition-colors"
+                  style={{ colorScheme: 'dark' }}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-white/40 uppercase tracking-wider">Fin de Ventas</label>
+                <input 
+                  type="datetime-local" 
+                  value={formData.sale_end_date}
+                  onChange={(e) => setFormData({ ...formData, sale_end_date: e.target.value })}
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cf-yellow/50 transition-colors"
+                  style={{ colorScheme: 'dark' }}
+                />
+              </div>
+            </>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
