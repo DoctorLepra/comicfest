@@ -5,6 +5,7 @@ import { Plus, Edit2, Trash2, Calendar, MapPin, MoreHorizontal, ChevronDown, Che
 import clsx from "clsx";
 import StandModal from "@/components/ui/StandModal";
 import PolicyFormModal from "@/components/ui/PolicyFormModal";
+import TableActions from "@/components/ui/TableActions";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import EventModal from "@/components/ui/EventModal";
@@ -53,9 +54,61 @@ export default function EventosPage() {
   }, []);
 
   const fetchEvents = async () => {
-    const { data, error } = await supabase.from('events').select('*').order('start_date', { ascending: false });
+    const { data, error } = await supabase
+      .from('events')
+      .select(`
+        *,
+        stands (
+          id,
+          pos_x,
+          pos_y,
+          stand_reservations (
+            payment_status,
+            total_amount,
+            balance_due
+          )
+        )
+      `)
+      .order('start_date', { ascending: false });
+
     if (data) {
-      setEvents(data);
+      const enrichedEvents = data.map(event => {
+        let totalSales = 0;
+        let totalReservedStands = 0;
+        
+        const physicalStands = event.stands?.filter((s: any) => s.pos_x !== null) || [];
+        const totalPhysicalStands = physicalStands.length;
+
+        physicalStands.forEach((stand: any) => {
+          const reservations = stand.stand_reservations || [];
+          
+          if (reservations.length > 0) {
+            totalReservedStands++;
+            
+            reservations.forEach((res: any) => {
+              if (res.payment_status === 'paid' || res.balance_due == 0) {
+                totalSales += res.total_amount;
+              } else if (res.payment_status === 'partial') {
+                const amountPaid = res.total_amount - res.balance_due;
+                if (amountPaid >= (res.total_amount * 0.6)) {
+                  totalSales += res.total_amount * (2/3);
+                } else {
+                  totalSales += res.total_amount * (1/3);
+                }
+              }
+            });
+          }
+        });
+
+        return {
+          ...event,
+          calculated_sales: totalSales,
+          calculated_reserved_stands: totalReservedStands,
+          calculated_total_stands: totalPhysicalStands
+        };
+      });
+
+      setEvents(enrichedEvents);
     }
   };
 
@@ -448,21 +501,13 @@ export default function EventosPage() {
                       <span className="text-white font-medium text-sm">{policy.title}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => {
-                          setEditingPolicy(policy);
-                          setIsPolicyModalOpen(true);
-                        }}
-                        className="p-2 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-                      >
-                        <Edit2 size={14} />
-                      </button>
-                      <button 
-                        onClick={() => handleDeletePolicy(policy.id)}
-                        className="p-2 text-white/40 hover:text-red-400 bg-white/5 hover:bg-red-400/10 rounded-lg transition-colors"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                    <TableActions 
+                      onEdit={() => {
+                        setEditingPolicy(policy);
+                        setIsPolicyModalOpen(true);
+                      }}
+                      onDelete={() => handleDeletePolicy(policy.id)}
+                    />
                     </div>
                   </div>
                 ))
@@ -607,8 +652,8 @@ export default function EventosPage() {
                       )}
                     </div>
                   </td>
-                   <td className="px-6 py-4 text-sm text-green-400 font-mono font-medium">$0</td>
-                  <td className="px-6 py-4 text-sm text-white/80">0 stands</td>
+                   <td className="px-6 py-4 text-sm text-green-400 font-mono font-medium">${new Intl.NumberFormat("es-CO").format(event.calculated_sales || 0)}</td>
+                  <td className="px-6 py-4 text-sm text-white/80">{event.calculated_reserved_stands || 0}/{event.calculated_total_stands || 0} stands</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 text-sm text-white/60">
                       <MapPin size={14} />
@@ -617,36 +662,18 @@ export default function EventosPage() {
                   </td>
                    <td className="px-6 py-4 text-sm text-white/60">{event.start_date}</td>
                   <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                    <div className="relative inline-block text-left group/dropdown">
-                      <button className="p-2 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors focus:outline-none">
-                        <MoreHorizontal size={16} />
-                      </button>
-                      
-                      <div className="absolute right-0 mt-2 w-48 rounded-xl bg-[#141414] border border-white/10 shadow-2xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-20 overflow-hidden translate-y-1 group-hover/dropdown:translate-y-0 text-left">
-                        <div className="py-1">
-                          <button 
-                            onClick={() => router.push(`/dashboard/eventos/${event.id}`)}
-                            className="w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center gap-2"
-                          >
-                            <Settings size={14} /> Administrar
-                          </button>
-                          <button 
-                            onClick={() => {
-                              setEventToDuplicate(event);
-                              setIsDuplicateModalOpen(true);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center gap-2"
-                          >
-                            <Copy size={14} /> Duplicar
-                          </button>
-                           <button 
-                            onClick={() => handleDeleteEvent(event.id)}
-                            className="w-full text-left px-4 py-2 text-sm text-red-400/80 hover:bg-red-500/10 hover:text-red-400 flex items-center gap-2 border-t border-white/5 mt-1 pt-2"
-                          >
-                            <Trash2 size={14} /> Eliminar
-                          </button>
-                        </div>
-                      </div>
+                    <div className="flex justify-end gap-2">
+                      <TableActions 
+                        onView={() => router.push(`/dashboard/eventos/${event.id}`)}
+                        extraActions={[
+                          {
+                            icon: Copy,
+                            onClick: () => handleDuplicateEvent(event.id),
+                            label: "Duplicar evento"
+                          }
+                        ]}
+                        onDelete={() => handleDeleteEvent(event.id)}
+                      />
                     </div>
                   </td>
                 </tr>

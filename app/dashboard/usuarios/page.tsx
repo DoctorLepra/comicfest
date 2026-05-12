@@ -2,7 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { ShieldCheck, UserPlus, Search, Edit2, Trash2, Loader2 } from "lucide-react";
+import { 
+  ShieldCheck, 
+  UserPlus, 
+  Search, 
+  Loader2, 
+  Edit2, 
+  Trash2, 
+  ChevronLeft, 
+  ChevronRight,
+  MoreVertical
+} from "lucide-react";
+import TableActions from "@/components/ui/TableActions";
 import clsx from "clsx";
 import UserFormModal from "@/components/ui/UserFormModal";
 
@@ -240,21 +251,11 @@ export default function UsuariosPage() {
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2">
-                        <button 
-                          onClick={() => openEditModal(user)}
-                          className="p-2 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-                        >
-                          <Edit2 size={14} />
-                        </button>
-                        <button 
-                          onClick={() => handleDeleteUser(user.id, `${user.first_name} ${user.last_name}`)}
-                          disabled={isDeletingId === user.id}
-                          className="p-2 text-white/40 hover:text-red-400 bg-white/5 hover:bg-red-400/10 rounded-lg transition-colors disabled:opacity-50"
-                        >
-                          {isDeletingId === user.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
-                        </button>
-                      </div>
+                      <TableActions 
+                        onEdit={() => openEditModal(user)}
+                        onDelete={() => handleDeleteUser(user.id, `${user.first_name} ${user.last_name}`)}
+                        isDeleting={isDeletingId === user.id}
+                      />
                     </td>
                   </tr>
                 ))}

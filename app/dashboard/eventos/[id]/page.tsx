@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { 
   ChevronLeft, 
@@ -32,7 +32,9 @@ import StandMapEditor from "@/components/ui/StandMapEditor";
 import DashboardModal from "@/components/ui/DashboardModal";
 import PolicyFormModal from "@/components/ui/PolicyFormModal";
 import AssignPoliciesModal from "@/components/ui/AssignPoliciesModal";
-import { Search, Filter, Trash2 as TrashIcon, Check } from "lucide-react";
+import Pagination from "@/components/ui/Pagination";
+import TableActions from "@/components/ui/TableActions";
+import { Search, Filter, Trash2 as TrashIcon, Check, ChevronRight, Download, ArrowUpAZ, ArrowDownAZ, X } from "lucide-react";
 
 export default function EventDetailsPage() {
   const { id } = useParams();
@@ -52,6 +54,119 @@ export default function EventDetailsPage() {
   const [reservations, setReservations] = useState<any[]>([]);
   const [selectedReservations, setSelectedReservations] = useState<string[]>([]);
   const [reservationAlerts, setReservationAlerts] = useState<{id: string, message: string}[]>([]);
+  
+  // Toolbar state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterDateFrom, setFilterDateFrom] = useState("");
+  const [filterDateTo, setFilterDateTo] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterTipo, setFilterTipo] = useState("");
+  const [filterValor, setFilterValor] = useState("");
+  const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
+
+  const hasActiveFilters = !!(filterDateFrom || filterDateTo || filterStatus || filterTipo || filterValor);
+  const clearFilters = () => {
+    setFilterDateFrom("");
+    setFilterDateTo("");
+    setFilterStatus("");
+    setFilterTipo("");
+    setFilterValor("");
+  };
+
+  const uniqueTipos = useMemo(() => {
+    const tipos = new Set(reservations.map(r => r.stand?.category).filter(Boolean));
+    return Array.from(tipos) as string[];
+  }, [reservations]);
+
+  const filteredSortedReservations = useMemo(() => {
+    let result = [...reservations];
+
+    if (searchTerm) {
+      const lower = searchTerm.toLowerCase();
+      result = result.filter(res => {
+        const name = (res.exhibitor?.brand_name || `${res.exhibitor?.first_name || ""} ${res.exhibitor?.last_name || ""}`).toLowerCase();
+        const code = `REV-26${res.reservation_number?.toString().padStart(4, '0') || '----'}`.toLowerCase();
+        return name.includes(lower) || code.includes(lower);
+      });
+    }
+
+    if (filterDateFrom) {
+      result = result.filter(res => new Date(res.created_at) >= new Date(filterDateFrom));
+    }
+    if (filterDateTo) {
+      result = result.filter(res => new Date(res.created_at) <= new Date(filterDateTo + "T23:59:59"));
+    }
+    if (filterStatus) {
+      result = result.filter(res => {
+        const computedStatus = res.payment_status === 'paid' || res.balance_due == 0 ? 'Pagado' : 
+                               res.payment_status === 'partial' ? (
+                                 (res.total_amount - res.balance_due) >= (res.total_amount * 0.6) ? 'Abono 2/3' : 'Abono 1/3'
+                               ) : 
+                               res.payment_status === 'pending' ? 'Pendiente' : 'Cancelado';
+        return computedStatus === filterStatus;
+      });
+    }
+
+    if (filterTipo) {
+      result = result.filter(res => res.stand?.category === filterTipo);
+    }
+    if (filterValor) {
+      result = result.filter(res => res.total_amount.toString().includes(filterValor));
+    }
+
+    if (sortOrder !== "none") {
+      result.sort((a, b) => {
+        const nameA = (a.exhibitor?.brand_name || a.exhibitor?.first_name || "").toLowerCase();
+        const nameB = (b.exhibitor?.brand_name || b.exhibitor?.first_name || "").toLowerCase();
+        return sortOrder === "asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+      });
+    }
+
+    return result;
+  }, [reservations, searchTerm, filterDateFrom, filterDateTo, filterStatus, filterTipo, filterValor, sortOrder]);
+
+  const exportCSV = () => {
+    let csvData = selectedReservations.length > 0 
+      ? filteredSortedReservations.filter(r => selectedReservations.includes(r.id))
+      : filteredSortedReservations;
+      
+    const headers = ["ID", "Expositor", "Codigo", "Fecha", "Stand", "Tipo", "Valor", "Estado"];
+    const rows = csvData.map(res => {
+      const computedStatus = res.payment_status === 'paid' || res.balance_due == 0 ? 'Pagado' : 
+                             res.payment_status === 'partial' ? (
+                               (res.total_amount - res.balance_due) >= (res.total_amount * 0.6) ? 'Abono 2/3' : 'Abono 1/3'
+                             ) : 
+                             res.payment_status === 'pending' ? 'Pendiente' : 'Cancelado';
+      return [
+        res.id,
+        res.exhibitor?.brand_name || `${res.exhibitor?.first_name || ""} ${res.exhibitor?.last_name || ""}`,
+        `REV-26${res.reservation_number?.toString().padStart(4, '0') || '----'}`,
+        new Date(res.created_at).toLocaleDateString("es-CO"),
+        res.stand?.numeracion || res.stand?.identifier || "-",
+        res.stand?.category || "-",
+        res.total_amount,
+        computedStatus
+      ];
+    });
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `reservas_event_${id}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  
+  // Paginación para reservas
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     fetchEventDetails();
@@ -66,14 +181,10 @@ export default function EventDetailsPage() {
       .single();
 
     if (eventData) {
-      const { count: policiesCount } = await supabase
-        .from('policies')
-        .select('*', { count: 'exact', head: true });
-
       setEvent({
         ...eventData,
         stands_count: eventData.stands?.length || 0,
-        policies_count: policiesCount || 0
+        policies_count: eventData.policies?.length || 0
       });
     }
     setLoading(false);
@@ -97,38 +208,29 @@ export default function EventDetailsPage() {
   };
 
   const fetchReservations = async () => {
-    const { data, error } = await supabase
-      .from('stand_reservations')
-      .select(`
-        *,
-        exhibitor:profiles!exhibitor_id(brand_name, first_name, last_name),
-        stand:stands!stand_id(numeracion, identifier)
-      `)
-      .eq('stand:stands.event_id', id);
-
-    if (data) {
-      // Filter manually because Supabase filter on joined tables might be tricky depending on API version
-      // Or we can use nested filter if supported. 
-      // Let's assume we fetch all and filter in JS if the query above returns everything.
-      // Actually, a better way is to join from stands or filter by event_id if we have it in stand_reservations.
-      // Looking at the schema, stand_reservations doesn't have event_id, only stand_id.
+    // Let's get stand IDs for this event first
+    const { data: eventStands, error: standsError } = await supabase.from('stands').select('id').eq('event_id', id);
+    
+    if (eventStands && eventStands.length > 0) {
+      const standIds = eventStands.map(s => s.id);
+      const { data: resData, error: resError } = await supabase
+        .from('stand_reservations')
+        .select(`
+          *,
+          exhibitor:profiles!exhibitor_id(brand_name, first_name, last_name),
+          stand:stands!stand_id(id, numeracion, identifier, category)
+        `)
+        .in('stand_id', standIds)
+        .order('created_at', { ascending: false })
+        .order('id', { ascending: true });
       
-      // Let's get stand IDs for this event first
-      const { data: eventStands } = await supabase.from('stands').select('id').eq('event_id', id);
-      if (eventStands) {
-        const standIds = eventStands.map(s => s.id);
-        const { data: resData, error: resError } = await supabase
-          .from('stand_reservations')
-          .select(`
-            *,
-            exhibitor:profiles!exhibitor_id(brand_name, first_name, last_name),
-            stand:stands!stand_id(id, numeracion, identifier)
-          `)
-          .in('stand_id', standIds)
-          .order('created_at', { ascending: false });
-        
-        if (resData) setReservations(resData);
+      if (resError) {
+        console.error("Error fetching reservations:", resError);
       }
+      
+      if (resData) setReservations(resData);
+    } else {
+      setReservations([]);
     }
   };
 
@@ -187,6 +289,37 @@ export default function EventDetailsPage() {
     }
   };
 
+  const handleUpdatePaymentStatus = async (reservation: any, newOption: string) => {
+    let newStatus = 'pending';
+    let newBalanceDue = reservation.total_amount;
+
+    if (newOption === 'Pagado') {
+      newStatus = 'paid';
+      newBalanceDue = 0;
+    } else if (newOption === 'Abono 1/3') {
+      newStatus = 'partial';
+      newBalanceDue = reservation.total_amount * (2 / 3);
+    } else if (newOption === 'Abono 2/3') {
+      newStatus = 'partial';
+      newBalanceDue = reservation.total_amount * (1 / 3);
+    } else if (newOption === 'Cancelado') {
+      newStatus = 'cancelled';
+      newBalanceDue = reservation.total_amount;
+    }
+
+    const { error } = await supabase
+      .from('stand_reservations')
+      .update({ payment_status: newStatus, balance_due: newBalanceDue })
+      .eq('id', reservation.id);
+      
+    if (!error) {
+      fetchReservations();
+    } else {
+      console.error("Error updating status:", error);
+      alert("Error al actualizar el estado de la reserva");
+    }
+  };
+
   const handleAssignStands = async (standIds: string[]) => {
     // Fetch the global stands to duplicate them
     const { data: globalStands } = await supabase
@@ -210,6 +343,7 @@ export default function EventDetailsPage() {
       if (!error) {
         setIsAssignModalOpen(false);
         fetchEventDetails();
+        fetchReservations();
       } else {
         alert("Error al asignar stands");
       }
@@ -233,8 +367,26 @@ export default function EventDetailsPage() {
       // Update
       const { error } = await supabase.from('stands').update(payload).eq('id', editingStandData.id);
       if (!error) {
+        // Sincronizar las instancias hijas en el mapa
+        await supabase.from('stands')
+          .update({
+            identifier: payload.identifier,
+            numeracion: payload.numeracion,
+            category: payload.category,
+            dimensions: payload.dimensions,
+            description: payload.description,
+            base_price: payload.base_price,
+            sale_start_date: payload.sale_start_date,
+            sale_end_date: payload.sale_end_date
+          })
+          .eq('event_id', id)
+          .not('pos_x', 'is', null)
+          .eq('category', editingStandData.category)
+          .eq('identifier', editingStandData.identifier);
+
         setIsEditStandModalOpen(false);
         fetchEventDetails();
+        fetchReservations();
       }
     } else {
       // Create new global stand (wait, the prompt says "si un stand no esta creado, tendra la posibilidad de crearlo de forma general para todos los eventos")
@@ -250,6 +402,7 @@ export default function EventDetailsPage() {
       if (!error) {
         setIsEditStandModalOpen(false);
         fetchEventDetails();
+        fetchReservations();
       }
     }
   };
@@ -317,6 +470,7 @@ export default function EventDetailsPage() {
       const { error } = await supabase.from('stands').delete().eq('id', standId);
       if (!error) {
         fetchEventDetails();
+        fetchReservations();
       }
     }
   };
@@ -351,8 +505,9 @@ export default function EventDetailsPage() {
   ];
 
   const standsAssigned = (event as any)?.stands_count > 0 || (event?.stands?.length > 0);
-  const hasStandsWithoutDates = event?.stands && event.stands.length > 0 
-    ? event.stands.some((s: any) => !s.sale_start_date || !s.sale_end_date)
+  const standTemplates = event?.stands?.filter((s: any) => s.pos_x === null && s.pos_y === null) || [];
+  const hasStandsWithoutDates = standTemplates.length > 0 
+    ? standTemplates.some((s: any) => !s.sale_start_date || !s.sale_end_date)
     : false;
 
   const checklistItems = [
@@ -633,22 +788,14 @@ export default function EventDetailsPage() {
                                 {assignments}
                               </span>
                             </td>
-                            <td className="p-4 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button 
-                                onClick={() => {
+                            <td className="p-4">
+                              <TableActions 
+                                onEdit={() => {
                                   setEditingStandData(template);
                                   setIsEditStandModalOpen(true);
                                 }}
-                                className="p-2 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-                              >
-                                <Edit2 size={14} />
-                              </button>
-                              <button 
-                                onClick={() => handleDeleteStand(template.id)}
-                                className="p-2 text-red-400/70 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors"
-                              >
-                                <Trash2 size={14} />
-                              </button>
+                                onDelete={() => handleDeleteStand(template.id)}
+                              />
                             </td>
                           </tr>
                         )})}
@@ -695,23 +842,13 @@ export default function EventDetailsPage() {
                             <h4 className="font-bold text-white mb-1">{policy.title}</h4>
                             <p className="text-sm text-white/40 line-clamp-2 max-w-2xl">{policy.content.replace(/<[^>]+>/g, '')}</p>
                           </div>
-                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button 
-                              onClick={() => {
-                                setEditingPolicyData(policy);
-                                setIsEditPolicyModalOpen(true);
-                              }}
-                              className="p-2 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-                            >
-                              <Edit2 size={16} />
-                            </button>
-                            <button 
-                              onClick={() => handleDeletePolicy(policy.id)}
-                              className="p-2 text-red-400/70 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
+                          <TableActions 
+                            onEdit={() => {
+                              setEditingPolicyData(policy);
+                              setIsEditPolicyModalOpen(true);
+                            }}
+                            onDelete={() => handleDeletePolicy(policy.id)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -741,7 +878,142 @@ export default function EventDetailsPage() {
                 </div>
 
                 <div className="bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
-                  {reservations.length === 0 ? (
+                  {/* Toolbar */}
+                  <div className="px-4 py-3 border-b border-white/10 bg-white/[0.02] flex flex-wrap gap-3 items-center">
+                    {/* Select All */}
+                    {filteredSortedReservations.length > 0 && (
+                      <button
+                        onClick={() => {
+                          if (selectedReservations.length === filteredSortedReservations.length) setSelectedReservations([]);
+                          else setSelectedReservations(filteredSortedReservations.map(r => r.id));
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors bg-white/5 text-white/50 border-white/10 hover:text-white hover:bg-white/10"
+                      >
+                        {selectedReservations.length === filteredSortedReservations.length ? "✓ Todos" : "Seleccionar todo"}
+                      </button>
+                    )}
+
+                    {/* Search */}
+                    <div className="relative flex-1 min-w-[160px] max-w-xs">
+                      <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                      <input
+                        type="text"
+                        placeholder="Buscar nombre, documento…"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 bg-black/50 border border-white/10 rounded-lg text-sm text-white placeholder-white/30 focus:outline-none focus:border-cf-yellow/50 transition-colors"
+                      />
+                    </div>
+
+                    {/* Filters toggle */}
+                    <button
+                      onClick={() => setShowFilters((v) => !v)}
+                      className={clsx(
+                        "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors",
+                        showFilters || hasActiveFilters
+                          ? "bg-cf-yellow/15 text-cf-yellow border-cf-yellow/30"
+                          : "bg-white/5 text-white/50 border-white/10 hover:text-white hover:bg-white/10"
+                      )}
+                    >
+                      <Filter size={12} />
+                      Filtros
+                      {hasActiveFilters && <span className="bg-cf-yellow text-black rounded-full w-3.5 h-3.5 flex items-center justify-center text-[9px] font-black">!</span>}
+                    </button>
+
+                    {/* Sort A-Z / Z-A */}
+                    <button
+                      onClick={() => setSortOrder(sortOrder === "asc" ? "none" : "asc")}
+                      title="Ordenar A → Z"
+                      className={clsx(
+                        "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors",
+                        sortOrder === "asc"
+                          ? "bg-cf-yellow/15 text-cf-yellow border-cf-yellow/30"
+                          : "bg-white/5 text-white/50 border-white/10 hover:text-white hover:bg-white/10"
+                      )}
+                    >
+                      <ArrowUpAZ size={13} /> A–Z
+                    </button>
+                    <button
+                      onClick={() => setSortOrder(sortOrder === "desc" ? "none" : "desc")}
+                      title="Ordenar Z → A"
+                      className={clsx(
+                        "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors",
+                        sortOrder === "desc"
+                          ? "bg-cf-yellow/15 text-cf-yellow border-cf-yellow/30"
+                          : "bg-white/5 text-white/50 border-white/10 hover:text-white hover:bg-white/10"
+                      )}
+                    >
+                      <ArrowDownAZ size={13} /> Z–A
+                    </button>
+
+                    {/* CSV */}
+                    <button
+                      onClick={exportCSV}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors ml-auto"
+                    >
+                      <Download size={13} />
+                      {selectedReservations.length > 0
+                        ? `CSV (${selectedReservations.length} sel.)`
+                        : (filterDateFrom || filterDateTo || filterStatus) ? "CSV (filtrado)" : "Exportar CSV"}
+                    </button>
+                  </div>
+
+                  {/* Filter panel */}
+                  {showFilters && (
+                    <div className="px-4 py-3 border-b border-white/10 bg-white/[0.015] flex flex-wrap gap-4 items-end shrink-0">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Estado</label>
+                        <select
+                          value={filterStatus}
+                          onChange={(e) => setFilterStatus(e.target.value)}
+                          className="bg-black/60 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cf-yellow/40 appearance-none cursor-pointer pr-8"
+                          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center" }}
+                        >
+                          <option value="">Todos los estados</option>
+                          <option value="Pendiente">Pendiente</option>
+                          <option value="Abono 1/3">Abono 1/3</option>
+                          <option value="Abono 2/3">Abono 2/3</option>
+                          <option value="Pagado">Pagado</option>
+                          <option value="Cancelado">Cancelado</option>
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Fecha Desde</label>
+                        <input type="date" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)}
+                          className="bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cf-yellow/40" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Fecha Hasta</label>
+                        <input type="date" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)}
+                          className="bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cf-yellow/40" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Tipo</label>
+                        <select
+                          value={filterTipo}
+                          onChange={(e) => setFilterTipo(e.target.value)}
+                          className="bg-black/60 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cf-yellow/40 appearance-none cursor-pointer pr-8"
+                          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center" }}
+                        >
+                          <option value="">Todos</option>
+                          {uniqueTipos.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Valor</label>
+                        <input type="number" placeholder="Ej. 150000" value={filterValor} onChange={(e) => setFilterValor(e.target.value)}
+                          className="bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-cf-yellow/40 w-28" />
+                      </div>
+                      {hasActiveFilters && (
+                        <button onClick={clearFilters}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-colors">
+                          <X size={11} /> Limpiar
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {filteredSortedReservations.length === 0 ? (
                     <div className="p-12 text-center flex flex-col items-center justify-center border-t border-white/5">
                       <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4 text-white/20">
                         <Users size={32} />
@@ -757,12 +1029,12 @@ export default function EventDetailsPage() {
                             <th className="p-4 w-12">
                               <button 
                                 onClick={() => {
-                                  if (selectedReservations.length === reservations.length) setSelectedReservations([]);
-                                  else setSelectedReservations(reservations.map(r => r.id));
+                                  if (selectedReservations.length === filteredSortedReservations.length) setSelectedReservations([]);
+                                  else setSelectedReservations(filteredSortedReservations.map(r => r.id));
                                 }}
                                 className={clsx(
                                   "w-5 h-5 rounded border flex items-center justify-center transition-all",
-                                  selectedReservations.length === reservations.length 
+                                  selectedReservations.length === filteredSortedReservations.length && filteredSortedReservations.length > 0 
                                     ? "bg-cf-yellow border-cf-yellow text-black" 
                                     : "border-white/20 text-transparent"
                                 )}
@@ -774,13 +1046,14 @@ export default function EventDetailsPage() {
                             <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider">Código</th>
                             <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider">Fecha</th>
                             <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider text-center">Stand</th>
+                            <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider text-center">Tipo</th>
                             <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider">Valor</th>
                             <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider">Estado</th>
                             <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider text-right">Acciones</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                          {reservations.map((res) => (
+                          {filteredSortedReservations.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE).map((res) => (
                             <tr key={res.id} className={clsx(
                               "hover:bg-white/[0.02] transition-colors group",
                               selectedReservations.includes(res.id) && "bg-cf-yellow/[0.02]"
@@ -818,32 +1091,49 @@ export default function EventDetailsPage() {
                                   {res.stand?.numeracion || res.stand?.identifier || '-'}
                                 </span>
                               </td>
+                              <td className="p-4 text-center">
+                                <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/5 border border-white/10 text-white/60 text-xs uppercase tracking-wider">
+                                  {res.stand?.category || '-'}
+                                </span>
+                              </td>
                               <td className="p-4 text-sm font-bold text-green-400">
                                 ${new Intl.NumberFormat("es-CO").format(res.total_amount)}
                               </td>
                               <td className="p-4">
-                                <span className={clsx(
-                                  "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
-                                  res.payment_status === 'paid' || res.balance_due == 0 ? "bg-green-500/10 text-green-400 border-green-500/20" :
-                                  res.payment_status === 'partial' ? "bg-cf-yellow/10 text-cf-yellow border-cf-yellow/20" :
-                                  res.payment_status === 'pending' ? "bg-white/10 text-white/60 border-white/20" :
-                                  "bg-red-500/10 text-red-400 border-red-500/20"
-                                )}>
-                                  {res.payment_status === 'paid' || res.balance_due == 0 ? 'Pagado' : 
-                                   res.payment_status === 'partial' ? (
-                                     (res.total_amount - res.balance_due) >= (res.total_amount * 0.6) ? 'Abono 2/3' : 'Abono 1/3'
-                                   ) : 
-                                   res.payment_status === 'pending' ? 'Pendiente' : 'Cancelado'}
-                                </span>
-                              </td>
-                              <td className="p-4 text-right opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button 
-                                  onClick={() => handleDeleteReservation(res.id)}
-                                  className="p-2 text-red-400/70 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors"
-                                  title="Eliminar reserva y liberar stand"
+                                <select
+                                  value={
+                                    res.payment_status === 'paid' || res.balance_due == 0 ? 'Pagado' : 
+                                    res.payment_status === 'partial' ? (
+                                      (res.total_amount - res.balance_due) >= (res.total_amount * 0.6) ? 'Abono 2/3' : 'Abono 1/3'
+                                    ) : 
+                                    res.payment_status === 'pending' ? 'Pendiente' : 'Cancelado'
+                                  }
+                                  onChange={(e) => handleUpdatePaymentStatus(res, e.target.value)}
+                                  className={clsx(
+                                    "appearance-none px-3 py-1 pr-6 rounded-full text-[10px] font-bold uppercase tracking-wider border cursor-pointer focus:outline-none transition-colors",
+                                    res.payment_status === 'paid' || res.balance_due == 0 ? "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20" :
+                                    res.payment_status === 'partial' ? "bg-cf-yellow/10 text-cf-yellow border-cf-yellow/20 hover:bg-cf-yellow/20" :
+                                    res.payment_status === 'pending' ? "bg-white/10 text-white/60 border-white/20 hover:bg-white/20" :
+                                    "bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20"
+                                  )}
+                                  style={{
+                                    backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff80' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                                    backgroundPosition: 'right 0.2rem center',
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundSize: '1.2em 1.2em',
+                                  }}
                                 >
-                                  <Trash2 size={14} />
-                                </button>
+                                  <option value="Pendiente" className="bg-[#0a0a0a] text-white">Pendiente</option>
+                                  <option value="Abono 1/3" className="bg-[#0a0a0a] text-white">Abono 1/3</option>
+                                  <option value="Abono 2/3" className="bg-[#0a0a0a] text-white">Abono 2/3</option>
+                                  <option value="Pagado" className="bg-[#0a0a0a] text-white">Pagado</option>
+                                  <option value="Cancelado" className="bg-[#0a0a0a] text-white">Cancelado</option>
+                                </select>
+                              </td>
+                              <td className="p-4 text-right">
+                                <TableActions 
+                                  onDelete={() => handleDeleteReservation(res.id)}
+                                />
                               </td>
                             </tr>
                           ))}
@@ -851,7 +1141,15 @@ export default function EventDetailsPage() {
                       </table>
                     </div>
                   )}
+                  <Pagination 
+                    currentPage={currentPage}
+                    totalItems={filteredSortedReservations.length}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    onPageChange={setCurrentPage}
+                    labelName="reservas"
+                  />
                 </div>
+
               </motion.div>
             ) : (
               <motion.div 
