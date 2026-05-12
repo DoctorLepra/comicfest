@@ -20,7 +20,8 @@ import {
   ArrowRight,
   Plus,
   Map,
-  Trash2
+  Trash2,
+  FileText
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,6 +30,9 @@ import AssignStandsModal from "@/components/ui/AssignStandsModal";
 import StandModal from "@/components/ui/StandModal";
 import StandMapEditor from "@/components/ui/StandMapEditor";
 import DashboardModal from "@/components/ui/DashboardModal";
+import PolicyFormModal from "@/components/ui/PolicyFormModal";
+import AssignPoliciesModal from "@/components/ui/AssignPoliciesModal";
+import { Search, Filter, Trash2 as TrashIcon, Check } from "lucide-react";
 
 export default function EventDetailsPage() {
   const { id } = useParams();
@@ -41,19 +45,27 @@ export default function EventDetailsPage() {
   const [isEditStandModalOpen, setIsEditStandModalOpen] = useState(false);
   const [editingStandData, setEditingStandData] = useState<any>(null);
 
+  // Policy Modal States
+  const [isAssignPolicyModalOpen, setIsAssignPolicyModalOpen] = useState(false);
+  const [isEditPolicyModalOpen, setIsEditPolicyModalOpen] = useState(false);
+  const [editingPolicyData, setEditingPolicyData] = useState<any>(null);
+  const [reservations, setReservations] = useState<any[]>([]);
+  const [selectedReservations, setSelectedReservations] = useState<string[]>([]);
+  const [reservationAlerts, setReservationAlerts] = useState<{id: string, message: string}[]>([]);
+
   useEffect(() => {
     fetchEventDetails();
+    fetchReservations();
   }, [id]);
 
   const fetchEventDetails = async () => {
     const { data: eventData, error: eventError } = await supabase
       .from('events')
-      .select('*, stands:stands(*)')
+      .select('*, stands:stands(*), policies:policies(*)')
       .eq('id', id)
       .single();
 
     if (eventData) {
-      // Fetch policies count separately since it's global for now
       const { count: policiesCount } = await supabase
         .from('policies')
         .select('*', { count: 'exact', head: true });
@@ -81,6 +93,97 @@ export default function EventDetailsPage() {
       alert("Error al actualizar el estado");
     } else {
       setEvent({ ...event, status: newStatus });
+    }
+  };
+
+  const fetchReservations = async () => {
+    const { data, error } = await supabase
+      .from('stand_reservations')
+      .select(`
+        *,
+        exhibitor:profiles!exhibitor_id(brand_name, first_name, last_name),
+        stand:stands!stand_id(numeracion, identifier)
+      `)
+      .eq('stand:stands.event_id', id);
+
+    if (data) {
+      // Filter manually because Supabase filter on joined tables might be tricky depending on API version
+      // Or we can use nested filter if supported. 
+      // Let's assume we fetch all and filter in JS if the query above returns everything.
+      // Actually, a better way is to join from stands or filter by event_id if we have it in stand_reservations.
+      // Looking at the schema, stand_reservations doesn't have event_id, only stand_id.
+      
+      // Let's get stand IDs for this event first
+      const { data: eventStands } = await supabase.from('stands').select('id').eq('event_id', id);
+      if (eventStands) {
+        const standIds = eventStands.map(s => s.id);
+        const { data: resData, error: resError } = await supabase
+          .from('stand_reservations')
+          .select(`
+            *,
+            exhibitor:profiles!exhibitor_id(brand_name, first_name, last_name),
+            stand:stands!stand_id(id, numeracion, identifier)
+          `)
+          .in('stand_id', standIds)
+          .order('created_at', { ascending: false });
+        
+        if (resData) setReservations(resData);
+      }
+    }
+  };
+
+  const handleDeleteReservation = async (reservationId: string) => {
+    const reservation = reservations.find(r => r.id === reservationId);
+    if (!reservation) return;
+
+    if (confirm("¿Estás seguro de eliminar esta reserva? El stand será liberado.")) {
+      const { error: deleteError } = await supabase
+        .from('stand_reservations')
+        .delete()
+        .eq('id', reservationId);
+
+      if (!deleteError) {
+        // Release stand
+        await supabase
+          .from('stands')
+          .update({ status: 'available' })
+          .eq('id', reservation.stand_id);
+
+        // Show alert
+        const alertId = Math.random().toString(36).substr(2, 9);
+        const standLabel = reservation.stand?.numeracion || reservation.stand?.identifier || "N/A";
+        setReservationAlerts(prev => [...prev, { id: alertId, message: `Stand ${standLabel} disponible para venta` }]);
+        
+        // Remove alert after 5 seconds
+        setTimeout(() => {
+          setReservationAlerts(prev => prev.filter(a => a.id !== alertId));
+        }, 5000);
+
+        fetchReservations();
+        fetchEventDetails();
+      }
+    }
+  };
+
+  const handleDeleteSelectedReservations = async () => {
+    if (confirm(`¿Estás seguro de eliminar ${selectedReservations.length} reservas seleccionadas?`)) {
+      for (const resId of selectedReservations) {
+        const reservation = reservations.find(r => r.id === resId);
+        if (reservation) {
+          await supabase.from('stand_reservations').delete().eq('id', resId);
+          await supabase.from('stands').update({ status: 'available' }).eq('id', reservation.stand_id);
+          
+          const standLabel = reservation.stand?.numeracion || reservation.stand?.identifier || "N/A";
+          const alertId = Math.random().toString(36).substr(2, 9);
+          setReservationAlerts(prev => [...prev, { id: alertId, message: `Stand ${standLabel} disponible para venta` }]);
+          setTimeout(() => {
+            setReservationAlerts(prev => prev.filter(a => a.id !== alertId));
+          }, 5000);
+        }
+      }
+      setSelectedReservations([]);
+      fetchReservations();
+      fetchEventDetails();
     }
   };
 
@@ -151,6 +254,64 @@ export default function EventDetailsPage() {
     }
   };
 
+  const handleAssignPolicies = async (policyIds: string[]) => {
+    const { data: globalPolicies } = await supabase
+      .from('policies')
+      .select('*')
+      .in('id', policyIds);
+      
+    if (globalPolicies && globalPolicies.length > 0) {
+      const newPolicies = globalPolicies.map(gp => ({
+        title: gp.title,
+        content: gp.content,
+        type: gp.type || 'general',
+        event_id: id // Assign to this event
+      }));
+      
+      const { error } = await supabase.from('policies').insert(newPolicies);
+      if (!error) {
+        setIsAssignPolicyModalOpen(false);
+        fetchEventDetails();
+      } else {
+        alert("Error al asignar políticas");
+      }
+    }
+  };
+
+  const handleSavePolicy = async (formData: any) => {
+    const payload: any = {
+      title: formData.nombre,
+      content: formData.descripcion,
+      event_id: id 
+    };
+
+    if (editingPolicyData?.id) {
+      // Update existing
+      const { error } = await supabase.from('policies').update(payload).eq('id', editingPolicyData.id);
+      if (!error) {
+        setIsEditPolicyModalOpen(false);
+        fetchEventDetails();
+      }
+    } else {
+      // Create new
+      if (editingPolicyData?.isGlobal) {
+        payload.event_id = null; // Create global policy
+      }
+      const { error } = await supabase.from('policies').insert([payload]);
+      if (!error) {
+        setIsEditPolicyModalOpen(false);
+        fetchEventDetails();
+      }
+    }
+  };
+
+  const handleDeletePolicy = async (policyId: string) => {
+    if (confirm("¿Estás seguro de eliminar esta política de este evento?")) {
+      const { error } = await supabase.from('policies').delete().eq('id', policyId);
+      if (!error) fetchEventDetails();
+    }
+  };
+
   const handleDeleteStand = async (standId: string) => {
     if (confirm("¿Seguro que deseas eliminar este stand del evento?")) {
       const { error } = await supabase.from('stands').delete().eq('id', standId);
@@ -186,7 +347,7 @@ export default function EventDetailsPage() {
     { id: "general", label: "Información General", icon: LayoutDashboard },
     { id: "stands", label: "Mapa de Stands", icon: MapPin },
     { id: "policies", label: "Políticas", icon: ShieldCheck },
-    { id: "exhibitors", label: "Expositores", icon: Users },
+    { id: "reservations", label: "Reservas", icon: Users },
   ];
 
   const standsAssigned = (event as any)?.stands_count > 0 || (event?.stands?.length > 0);
@@ -223,7 +384,26 @@ export default function EventDetailsPage() {
   const isReadyToPublish = progressPercent === 100;
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto w-full h-full flex flex-col gap-8">
+    <div className="p-6 max-w-[1600px] mx-auto w-full h-full flex flex-col gap-8 relative">
+      {/* Notifications/Alerts */}
+      <div className="fixed top-24 right-8 z-[200] flex flex-col gap-3 pointer-events-none">
+        <AnimatePresence>
+          {reservationAlerts.map((alert) => (
+            <motion.div
+              key={alert.id}
+              initial={{ opacity: 0, x: 100, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+              className="pointer-events-auto flex items-center gap-3 px-6 py-4 rounded-2xl bg-cf-yellow text-black shadow-[0_20px_40px_rgba(255,204,0,0.3)] border border-white/20 min-w-[300px]"
+            >
+              <div className="p-2 rounded-full bg-black/10">
+                <CheckCircle2 size={20} />
+              </div>
+              <p className="font-bold text-sm tracking-tight">{alert.message}</p>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
       {/* Header Navigation */}
       <div className="flex items-center justify-between">
         <button 
@@ -478,6 +658,201 @@ export default function EventDetailsPage() {
                 </div>
               </motion.div>
               </>
+            ) : activeTab === 'policies' ? (
+              <motion.div 
+                key={activeTab}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex flex-col gap-6"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-1">Políticas del Evento</h3>
+                    <p className="text-sm text-white/40">Gestiona los términos, condiciones y normativas para este evento específico.</p>
+                  </div>
+                  <button 
+                    onClick={() => setIsAssignPolicyModalOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-cf-yellow text-black rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(255,204,0,0.2)] hover:bg-yellow-400 transition-all"
+                  >
+                    <Plus size={16} /> Agregar Políticas
+                  </button>
+                </div>
+
+                <div className="bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden">
+                  {event.policies?.length === 0 ? (
+                    <div className="p-12 text-center flex flex-col items-center justify-center border-t border-white/5">
+                      <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4 text-white/20">
+                        <FileText size={32} />
+                      </div>
+                      <p className="text-white/60 mb-2 font-medium">Aún no hay políticas asignadas</p>
+                      <p className="text-sm text-white/40 max-w-md">Asigna políticas generales o crea una específica para que aplique en este evento.</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col divide-y divide-white/5">
+                      {event.policies?.map((policy: any) => (
+                        <div key={policy.id} className="flex items-center justify-between p-6 hover:bg-white/[0.02] transition-colors group">
+                          <div>
+                            <h4 className="font-bold text-white mb-1">{policy.title}</h4>
+                            <p className="text-sm text-white/40 line-clamp-2 max-w-2xl">{policy.content.replace(/<[^>]+>/g, '')}</p>
+                          </div>
+                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              onClick={() => {
+                                setEditingPolicyData(policy);
+                                setIsEditPolicyModalOpen(true);
+                              }}
+                              className="p-2 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                            >
+                              <Edit2 size={16} />
+                            </button>
+                            <button 
+                              onClick={() => handleDeletePolicy(policy.id)}
+                              className="p-2 text-red-400/70 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ) : activeTab === 'reservations' ? (
+              <motion.div 
+                key={activeTab}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex flex-col gap-6"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-1">Reservas de Stands</h3>
+                    <p className="text-sm text-white/40">Gestiona las reservas realizadas por los expositores para este evento.</p>
+                  </div>
+                  {selectedReservations.length > 0 && (
+                    <button 
+                      onClick={handleDeleteSelectedReservations}
+                      className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm font-bold hover:bg-red-500/20 transition-all animate-in fade-in slide-in-from-right-4"
+                    >
+                      <Trash2 size={16} /> Eliminar seleccionadas ({selectedReservations.length})
+                    </button>
+                  )}
+                </div>
+
+                <div className="bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+                  {reservations.length === 0 ? (
+                    <div className="p-12 text-center flex flex-col items-center justify-center border-t border-white/5">
+                      <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4 text-white/20">
+                        <Users size={32} />
+                      </div>
+                      <p className="text-white/60 mb-2 font-medium">Aún no hay reservas registradas</p>
+                      <p className="text-sm text-white/40 max-w-md">Las reservas aparecerán aquí una vez que los expositores completen el proceso de compra.</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-white/10 bg-white/[0.02]">
+                            <th className="p-4 w-12">
+                              <button 
+                                onClick={() => {
+                                  if (selectedReservations.length === reservations.length) setSelectedReservations([]);
+                                  else setSelectedReservations(reservations.map(r => r.id));
+                                }}
+                                className={clsx(
+                                  "w-5 h-5 rounded border flex items-center justify-center transition-all",
+                                  selectedReservations.length === reservations.length 
+                                    ? "bg-cf-yellow border-cf-yellow text-black" 
+                                    : "border-white/20 text-transparent"
+                                )}
+                              >
+                                <Check size={12} strokeWidth={4} />
+                              </button>
+                            </th>
+                            <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider">Nombre / Marca</th>
+                            <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider">Código</th>
+                            <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider">Fecha</th>
+                            <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider text-center">Stand</th>
+                            <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider">Valor</th>
+                            <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider">Estado</th>
+                            <th className="p-4 text-xs font-bold text-white/40 uppercase tracking-wider text-right">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                          {reservations.map((res) => (
+                            <tr key={res.id} className={clsx(
+                              "hover:bg-white/[0.02] transition-colors group",
+                              selectedReservations.includes(res.id) && "bg-cf-yellow/[0.02]"
+                            )}>
+                              <td className="p-4">
+                                <button 
+                                  onClick={() => {
+                                    if (selectedReservations.includes(res.id)) setSelectedReservations(selectedReservations.filter(id => id !== res.id));
+                                    else setSelectedReservations([...selectedReservations, res.id]);
+                                  }}
+                                  className={clsx(
+                                    "w-5 h-5 rounded border flex items-center justify-center transition-all",
+                                    selectedReservations.includes(res.id)
+                                      ? "bg-cf-yellow border-cf-yellow text-black" 
+                                      : "border-white/20 text-transparent hover:border-white/40"
+                                  )}
+                                >
+                                  <Check size={12} strokeWidth={4} />
+                                </button>
+                              </td>
+                              <td className="p-4">
+                                <div className="flex flex-col">
+                                  <span className="font-bold text-white text-sm">{res.exhibitor?.brand_name || `${res.exhibitor?.first_name} ${res.exhibitor?.last_name}`}</span>
+                                  <span className="text-[10px] text-white/40">Expositor</span>
+                                </div>
+                              </td>
+                              <td className="p-4 font-mono text-xs text-white/60">
+                                REV-26{res.reservation_number?.toString().padStart(4, '0') || '----'}
+                              </td>
+                              <td className="p-4 text-sm text-white/60">
+                                {new Date(res.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                              </td>
+                              <td className="p-4 text-center">
+                                <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/5 border border-white/10 text-white/80 font-bold text-xs">
+                                  {res.stand?.numeracion || res.stand?.identifier || '-'}
+                                </span>
+                              </td>
+                              <td className="p-4 text-sm font-bold text-green-400">
+                                ${new Intl.NumberFormat("es-CO").format(res.total_amount)}
+                              </td>
+                              <td className="p-4">
+                                <span className={clsx(
+                                  "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
+                                  res.payment_status === 'paid' || res.balance_due == 0 ? "bg-green-500/10 text-green-400 border-green-500/20" :
+                                  res.payment_status === 'partial' ? "bg-cf-yellow/10 text-cf-yellow border-cf-yellow/20" :
+                                  res.payment_status === 'pending' ? "bg-white/10 text-white/60 border-white/20" :
+                                  "bg-red-500/10 text-red-400 border-red-500/20"
+                                )}>
+                                  {res.payment_status === 'paid' || res.balance_due == 0 ? 'Pagado' : 
+                                   res.payment_status === 'partial' ? (
+                                     (res.total_amount - res.balance_due) >= (res.total_amount * 0.6) ? 'Abono 2/3' : 'Abono 1/3'
+                                   ) : 
+                                   res.payment_status === 'pending' ? 'Pendiente' : 'Cancelado'}
+                                </span>
+                              </td>
+                              <td className="p-4 text-right opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button 
+                                  onClick={() => handleDeleteReservation(res.id)}
+                                  className="p-2 text-red-400/70 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors"
+                                  title="Eliminar reserva y liberar stand"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
             ) : (
               <motion.div 
                 key={activeTab}
@@ -596,6 +971,26 @@ export default function EventDetailsPage() {
         onClose={() => setIsEditStandModalOpen(false)}
         onSave={handleSaveStand}
         initialData={editingStandData}
+      />
+
+      <AssignPoliciesModal
+        isOpen={isAssignPolicyModalOpen}
+        onClose={() => setIsAssignPolicyModalOpen(false)}
+        eventId={id as string}
+        onAssign={handleAssignPolicies}
+        assignedTitles={event?.policies?.map((p: any) => p.title) || []}
+        onCreateGlobal={() => {
+          setIsAssignPolicyModalOpen(false);
+          setEditingPolicyData({ isGlobal: true });
+          setIsEditPolicyModalOpen(true);
+        }}
+      />
+
+      <PolicyFormModal
+        isOpen={isEditPolicyModalOpen}
+        onClose={() => setIsEditPolicyModalOpen(false)}
+        onSave={handleSavePolicy}
+        initialData={editingPolicyData}
       />
     </div>
   );

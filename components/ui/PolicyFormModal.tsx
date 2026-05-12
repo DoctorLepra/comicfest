@@ -20,9 +20,9 @@ export default function PolicyFormModal({ isOpen, onClose, onSave, initialData }
   useEffect(() => {
     if (isOpen) {
       if (initialData) {
-        setNombre(initialData.title);
+        setNombre(initialData.title || "");
         if (editorRef.current) {
-          editorRef.current.innerHTML = initialData.content;
+          editorRef.current.innerHTML = initialData.content || "";
         }
       } else {
         setNombre("");
