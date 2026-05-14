@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Camera, Clock, Shirt, DollarSign, Send, ChevronDown, Upload, CheckCircle, ArrowLeft
+  Camera, Clock, Shirt, DollarSign, Send, ChevronDown, Upload, CheckCircle
 } from "lucide-react";
 import Link from "next/link";
 import Squares from "@/components/ui/Squares";
+import { supabase } from "@/lib/supabase";
 
 /* ─── Shared styles ─── */
 const inputClass =
@@ -64,54 +65,95 @@ const TIPO_DOC = ["C.C", "T.I", "C.E", "Pasaporte"];
 const CIUDADES = ["Bogotá", "Manizales", "Pereira", "Armenia", "Cali", "Neiva", "Bucaramanga"];
 const SANGRE = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 const EPS_LIST = [
-  "Aliansalud EPS",
-  "Anas Wayuu EPSI",
-  "Asmet Salud",
-  "Asociación Indígena del Cauca (AIC)",
-  "Cajacopi EPS",
-  "Capital Salud EPS",
-  "Capresoca EPS",
-  "Comfenalco Valle",
-  "Compensar EPS",
-  "Coosalud EPS",
-  "Dusakawi EPSI",
-  "Ecoopsos EPS",
-  "Emssanar EPS",
-  "EPS Familiar de Colombia",
-  "EPS Sanitas",
-  "EPS Sura",
-  "Famisanar EPS",
-  "Fuerzas Militares / Policía Nacional",
-  "Magisterio (Fiduprevisora)",
-  "Mallamas EPSI",
-  "Mutual Ser EPS",
-  "Nueva EPS",
-  "Pijaos Salud EPSI",
-  "Salud Total EPS",
-  "Salud Mia EPS",
-  "Savia Salud EPS",
-  "SOS EPS",
-  "No tengo / Vinculado",
-  "Otra"
+  "Aliansalud EPS", "Anas Wayuu EPSI", "Asmet Salud", "Asociación Indígena del Cauca (AIC)",
+  "Cajacopi EPS", "Capital Salud EPS", "Capresoca EPS", "Comfenalco Valle", "Compensar EPS",
+  "Coosalud EPS", "Dusakawi EPSI", "Ecoopsos EPS", "Emssanar EPS", "EPS Familiar de Colombia",
+  "EPS Sanitas", "EPS Sura", "Famisanar EPS", "Fuerzas Militares / Policía Nacional",
+  "Magisterio (Fiduprevisora)", "Mallamas EPSI", "Mutual Ser EPS", "Nueva EPS",
+  "Pijaos Salud EPSI", "Salud Total EPS", "Salud Mia EPS", "Savia Salud EPS", "SOS EPS",
+  "No tengo / Vinculado", "Otra"
 ];
 
 export default function TrabajaConNosotrosPage() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  
+  const [formData, setFormData] = useState({
+    nombre: "",
+    tipo_documento: "",
+    documento: "",
+    telefono: "",
+    ciudad: "",
+    grupo_sanguineo: "",
+    eps: "",
+  });
+
   const [trabajoPrevio, setTrabajoPrevio] = useState(false);
+  const [cedulaFile, setCedulaFile] = useState<File | null>(null);
+  const [rutFile, setRutFile] = useState<File | null>(null);
+
   const accentColor = "#f5c500";
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    setSent(true);
+    setErrorMsg("");
+
+    try {
+      let cedulaUrl = "";
+      let rutUrl = "";
+
+      if (cedulaFile) {
+        const fileExt = cedulaFile.name.split('.').pop();
+        const fileName = `cedula_${Date.now()}.${fileExt}`;
+        const filePath = `staff/${fileName}`;
+        const { error: uploadError } = await supabase.storage.from('event-uploads').upload(filePath, cedulaFile);
+        if (uploadError) throw uploadError;
+        const { data } = supabase.storage.from('event-uploads').getPublicUrl(filePath);
+        cedulaUrl = data.publicUrl;
+      }
+
+      if (rutFile) {
+        const fileExt = rutFile.name.split('.').pop();
+        const fileName = `rut_${Date.now()}.${fileExt}`;
+        const filePath = `staff/${fileName}`;
+        const { error: uploadError } = await supabase.storage.from('event-uploads').upload(filePath, rutFile);
+        if (uploadError) throw uploadError;
+        const { data } = supabase.storage.from('event-uploads').getPublicUrl(filePath);
+        rutUrl = data.publicUrl;
+      }
+
+      const payload = {
+        ...formData,
+        trabajo_previo: trabajoPrevio,
+        cedula_url: cedulaUrl,
+        rut_url: rutUrl,
+      };
+
+      const { error } = await supabase
+        .from('applications')
+        .insert({
+          type: 'staff_application',
+          form_data: payload
+        });
+
+      if (error) throw error;
+      setSent(true);
+    } catch (error: any) {
+      console.error(error);
+      setErrorMsg("Error al enviar tu aplicación. Revisa tu conexión e intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen" style={{ paddingTop: "80px" }}>
-
       {/* ── Hero ── */}
       <section className="relative overflow-hidden" style={{ height: "580px" }}>
         <div className="absolute inset-0">
@@ -139,7 +181,6 @@ export default function TrabajaConNosotrosPage() {
               TRABAJA CON NOSOTROS
             </h1>
             
-            {/* ── Copa Cosplay Style Replacement ── */}
             <div className="flex flex-col items-center mt-12 text-center">
               <p className="text-white font-display font-bold text-lg max-w-xl mx-auto activity-header-spacing text-center">
                 Bienvenido/a al proceso para el cargo de logística en ComicFest – PEREIRA 2026. Aquí encontrarás todo lo que debes saber sobre tus funciones, horarios y condiciones de participación.
@@ -159,7 +200,6 @@ export default function TrabajaConNosotrosPage() {
         </div>
       </section>
 
-      {/* ── Back link ── */}
       <div className="px-6 md:px-12 pt-10 pb-2 flex flex-col items-center">
         <div className="w-full max-w-4xl">
           <div className="h-[46px] w-full" />
@@ -272,17 +312,23 @@ export default function TrabajaConNosotrosPage() {
                 <p className="text-white/40 text-sm font-body">Completa tus datos para postularte al equipo de logística.</p>
               </div>
 
+              {errorMsg && (
+                <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl text-sm text-center">
+                  {errorMsg}
+                </div>
+              )}
+
               {/* Nombre completo */}
               <div>
                 <label className={labelClass}>Nombre Completo <span className="text-red-500">*</span></label>
-                <input type="text" required className={inputClass} />
+                <input type="text" name="nombre" required value={formData.nombre} onChange={handleChange} className={inputClass} />
               </div>
 
               {/* Tipo de documento + Número de documento */}
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="relative">
                   <label className={labelClass}>Tipo de documento <span className="text-red-500">*</span></label>
-                  <select required className={selectClass} style={selectStyle} defaultValue="">
+                  <select name="tipo_documento" required value={formData.tipo_documento} onChange={handleChange} className={selectClass} style={selectStyle}>
                     <option value="" disabled style={optStyle}>Selecciona</option>
                     {TIPO_DOC.map((t) => <option key={t} value={t} style={optStyle}>{t}</option>)}
                   </select>
@@ -290,21 +336,21 @@ export default function TrabajaConNosotrosPage() {
                 </div>
                 <div>
                   <label className={labelClass}>Número de documento <span className="text-red-500">*</span></label>
-                  <input type="text" required className={inputClass} />
+                  <input type="text" name="documento" required value={formData.documento} onChange={handleChange} className={inputClass} />
                 </div>
               </div>
 
               {/* Número de teléfono */}
               <div>
                 <label className={labelClass}>Número de teléfono <span className="text-red-500">*</span></label>
-                <input type="tel" required className={inputClass} />
+                <input type="tel" name="telefono" required value={formData.telefono} onChange={handleChange} className={inputClass} />
               </div>
 
               {/* Ciudad + Grupo sanguíneo */}
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="relative">
                   <label className={labelClass}>Ciudad <span className="text-red-500">*</span></label>
-                  <select required className={selectClass} style={selectStyle} defaultValue="">
+                  <select name="ciudad" required value={formData.ciudad} onChange={handleChange} className={selectClass} style={selectStyle}>
                     <option value="" disabled style={optStyle}>Selecciona</option>
                     {CIUDADES.map((c) => <option key={c} value={c} style={optStyle}>{c}</option>)}
                   </select>
@@ -312,7 +358,7 @@ export default function TrabajaConNosotrosPage() {
                 </div>
                 <div className="relative">
                   <label className={labelClass}>Grupo sanguíneo <span className="text-red-500">*</span></label>
-                  <select required className={selectClass} style={selectStyle} defaultValue="">
+                  <select name="grupo_sanguineo" required value={formData.grupo_sanguineo} onChange={handleChange} className={selectClass} style={selectStyle}>
                     <option value="" disabled style={optStyle}>Selecciona</option>
                     {SANGRE.map((s) => <option key={s} value={s} style={optStyle}>{s}</option>)}
                   </select>
@@ -323,7 +369,7 @@ export default function TrabajaConNosotrosPage() {
               {/* EPS */}
               <div className="relative">
                 <label className={labelClass}>EPS</label>
-                <select className={selectClass} style={selectStyle} defaultValue="">
+                <select name="eps" value={formData.eps} onChange={handleChange} className={selectClass} style={selectStyle}>
                   <option value="" style={optStyle}>Selecciona tu EPS</option>
                   {EPS_LIST.map((e) => <option key={e} value={e} style={optStyle}>{e}</option>)}
                 </select>
@@ -336,16 +382,20 @@ export default function TrabajaConNosotrosPage() {
                   <label className={labelClass}>Cédula escaneada (PDF) <span className="text-red-500">*</span></label>
                   <label className="flex items-center gap-3 w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 cursor-pointer hover:border-cf-yellow/30 transition-colors">
                     <Upload size={16} className="text-cf-yellow shrink-0" />
-                    <span className="text-cf-white/40 text-sm font-body truncate">Subir archivo PDF</span>
-                    <input type="file" accept=".pdf" required className="hidden" />
+                    <span className="text-cf-white/40 text-sm font-body truncate">
+                      {cedulaFile ? cedulaFile.name : "Subir archivo PDF"}
+                    </span>
+                    <input type="file" accept=".pdf" required onChange={(e) => setCedulaFile(e.target.files?.[0] || null)} className="hidden" />
                   </label>
                 </div>
                 <div>
                   <label className={labelClass}>RUT (PDF) <span className="text-red-500">*</span></label>
                   <label className="flex items-center gap-3 w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 cursor-pointer hover:border-cf-yellow/30 transition-colors">
                     <Upload size={16} className="text-cf-yellow shrink-0" />
-                    <span className="text-cf-white/40 text-sm font-body truncate">Subir archivo PDF</span>
-                    <input type="file" accept=".pdf" required className="hidden" />
+                    <span className="text-cf-white/40 text-sm font-body truncate">
+                      {rutFile ? rutFile.name : "Subir archivo PDF"}
+                    </span>
+                    <input type="file" accept=".pdf" required onChange={(e) => setRutFile(e.target.files?.[0] || null)} className="hidden" />
                   </label>
                 </div>
               </div>

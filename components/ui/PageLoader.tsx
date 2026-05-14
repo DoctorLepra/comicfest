@@ -64,9 +64,6 @@ export default function PageLoader() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.7 }}
             >
-              <p className="text-cf-yellow/60 font-display text-sm tracking-[0.4em] uppercase mb-2">
-                Colombia
-              </p>
               <Image
                 src="/images/grid-comicfest.png"
                 alt="Comicfest Loading"
